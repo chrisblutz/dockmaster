@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+STDOUT.sync = true
+
+$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), *%w(.. lib)))
+
+require 'dockmaster'
+require 'mercenary'
+
+Mercenary.program(:dockmaster) do |prog|
+  prog.version Dockmaster::VERSION
+  prog.syntax 'dockmaster <subcommand> [options]'
+
+  prog.action do |args, _|
+  end
+end

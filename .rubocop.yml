@@ -1,0 +1,7 @@
+Metrics/AbcSize:
+  Max: 20
+Metrics/LineLength:
+  Max: 100
+Metrics/MethodLength:
+  CountComments: false
+  Max: 20
