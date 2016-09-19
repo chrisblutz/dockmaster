@@ -4,21 +4,14 @@ module Dockmaster
     class << self
       def begin
         files = find_all_source_files
-        store_ary = []
+        store = Dockmaster::Store.new(nil, :none, '')
         files.each do |file|
-          store_ary << parse(file)
+          store = parse(file, store)
         end
 
-        store_ary.each do |s|
-          puts s.inspect
-        end
-
-        puts '===================================='
-
-        store = Dockmaster::Store.squash(store_ary)
         puts store.inspect
 
-        store_ary
+        store
       end
 
       def find_all_source_files
@@ -27,7 +20,7 @@ module Dockmaster
         Dir["#{home}/**/*.rb"]
       end
 
-      def parse(file)
+      def parse(file, store)
         parser = Parser::CurrentRuby.new
         parser.diagnostics.all_errors_are_fatal = true
         parser.diagnostics.ignore_warnings = true
@@ -35,11 +28,10 @@ module Dockmaster
         buffer.source = File.read(file)
         result_ary = parser.parse_with_comments(buffer)
         ast = result_ary[0]
-        puts ast.inspect
         comments = result_ary[1]
         comment_locs = parse_comment_locs(comments)
         @token_lines = []
-        store = traverse_ast(ast, comment_locs, Dockmaster::Store.new(nil), false)
+        store = traverse_ast(ast, comment_locs, store, false)
 
         store
       end
@@ -86,17 +78,17 @@ module Dockmaster
       def perform_parse(ast, comments, store)
         @token_lines << ast.loc.line
         @token_lines << ast.loc.last_line
-        if ast.type == :module
-          store.children << define_module_in_ast(ast.loc.line, ast, comments, Dockmaster::Store.new(store))
-        elsif ast.type == :class
-          store.children << define_class_in_ast(ast.loc.line, ast, comments, Dockmaster::Store.new(store))
-        elsif ast.type == :def
-          store = define_method_in_ast(ast.loc.line, ast, comments, store)
-        elsif ast.type == :casgn
-          store = define_constant_field_in_ast(ast.loc.line, ast, comments, store)
-        else
-          store = traverse_ast(ast, comments, store)
-        end
+        store = if ast.type == :module
+                  define_module_in_ast(ast.loc.line, ast, comments, store)
+                elsif ast.type == :class
+                  define_class_in_ast(ast.loc.line, ast, comments, store)
+                elsif ast.type == :def
+                  define_method_in_ast(ast.loc.line, ast, comments, store)
+                elsif ast.type == :casgn
+                  define_constant_field_in_ast(ast.loc.line, ast, comments, store)
+                else
+                  traverse_ast(ast, comments, store)
+                end
 
         store
       end
@@ -105,10 +97,13 @@ module Dockmaster
         unless ast.children[0].nil?
           child = ast.children[0]
           if child.type == :const
-            store.type = :module
-            store.name = child.to_a[1]
-            store.docs = closest_comment(line, comments)
-            store = traverse_ast(ast, comments, store)
+            in_cache = Dockmaster::Store.in_cache?(store, :module, child.to_a[1])
+
+            module_store = Dockmaster::Store.from_cache(store, :module, child.to_a[1])
+            module_store.docs = closest_comment(line, comments)
+            module_store = traverse_ast(ast, comments, module_store)
+
+            store.children << module_store unless in_cache
           end
         end
 
@@ -119,11 +114,14 @@ module Dockmaster
         unless ast.children[0].nil?
           child = ast.children[0]
           if child.type == :const
-            store.type = :class
-            store.name = child.to_a[1]
-            store.docs = closest_comment(line, comments)
+            in_cache = Dockmaster::Store.in_cache?(store, :class, child.to_a[1])
+
+            class_store = Dockmaster::Store.from_cache(store, :class, child.to_a[1])
+            class_store.docs = closest_comment(line, comments)
             # TODO: inheritance
-            store = traverse_ast(ast, comments, store)
+            class_store = traverse_ast(ast, comments, class_store)
+
+            store.children << class_store unless in_cache
           end
         end
 

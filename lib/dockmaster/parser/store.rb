@@ -1,28 +1,33 @@
 module Dockmaster
   class Store
     class << self
-      def squash(stores)
-        final = stores.shift unless stores.empty?
-        stores.each do |store|
-          final = perform_squash(final, store)
-        end
+      attr_reader :cache
 
-        final
-      end
+      def in_cache?(parent, type, name)
+        @cache ||= []
 
-      private
-
-      def perform_squash(to, from)
-        if to.similar?(from)
-          to.children += from.children
-          to.docs = from.docs unless from.docs.empty?
-          to.children.each do |to_c|
-            from.children.each do |from_c|
-              to_c = perform_squash(to_c, from_c)
-            end
+        @cache.each do |store|
+          if (!store.parent.nil? && !parent.nil? && store.parent.similar?(parent)) || (store.parent.nil? && parent.nil?)
+            return true if store.type == type && store.name == name
           end
         end
-        to
+
+        false
+      end
+
+      def from_cache(parent, type, name)
+        @cache ||= []
+
+        @cache.each do |store|
+          if (!store.parent.nil? && !parent.nil? && store.parent.similar?(parent)) || (store.parent.nil? && parent.nil?)
+            return store if store.type == type && store.name == name
+          end
+        end
+
+        new_store = Store.new(parent, type, name)
+        @cache << new_store
+
+        new_store
       end
     end
 
@@ -33,22 +38,26 @@ module Dockmaster
     attr_writer :docs
     attr_writer :fields
     attr_writer :methods
-    attr_writer :name
     attr_writer :type
 
-    def initialize(parent)
+    def initialize(parent, type, name)
       @parent = parent
-      return if parent.nil?
-      @path = if parent.path.nil?
-                ''
-              else
-                parent.path + File::SEPARATOR
-              end
-      @rb_string = if parent.rb_string.nil?
-                     ''
-                   else
-                     parent.rb_string + '::'
-                   end
+      @type = type
+      @name = name
+      unless parent.nil?
+        @path = if parent.path.nil?
+                  ''
+                else
+                  parent.path + File::SEPARATOR
+                end
+        @rb_string = if parent.rb_string.nil?
+                       ''
+                     else
+                       parent.rb_string + '::'
+                     end
+      end
+      @path += name.to_s unless @path.nil?
+      @rb_string += name.to_s unless @rb_string.nil?
     end
 
     def children
@@ -65,12 +74,6 @@ module Dockmaster
 
     def methods
       @methods ||= {}
-    end
-
-    def name=(name)
-      @name = name
-      @path += name.to_s unless @path.nil?
-      @rb_string += name.to_s unless @rb_string.nil?
     end
 
     def name
@@ -103,32 +106,10 @@ module Dockmaster
     end
 
     def similar?(other)
+      return false if other.rb_string != @rb_string
       return false if other.type != type
       return false if other.name != name
-
       true
-    end
-
-    def children_contains?(store)
-      children.each do |child|
-        return true if child.similar?(store)
-      end
-      false
-    end
-
-    def merge_children(store)
-      children.each do |child|
-        if child.similar?(store)
-          child.children += store.children
-          child.docs = store.docs unless store.docs.empty?
-        end
-      end
-    end
-
-    def merge_data(store)
-      fields.merge!(store.fields)
-      methods.merge!(store.methods)
-      @docs = store.docs unless store.docs.empty?
     end
 
     private

@@ -16,5 +16,5 @@ module Dockmaster
   autoload :Store, 'dockmaster/parser/store'
 end
 
-stores = Dockmaster::DocParser.begin
-stores.each { |s| Dockmaster::Output.start_processing(s) }
+store = Dockmaster::DocParser.begin
+Dockmaster::Output.start_processing(store)
