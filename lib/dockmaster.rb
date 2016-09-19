@@ -13,8 +13,8 @@ module Dockmaster
   autoload :Configuration, 'dockmaster/configuration'
   autoload :DocParser, 'dockmaster/parser/doc_parser'
   autoload :Output, 'dockmaster/output/output'
-  autoload :Storage, 'dockmaster/parser/storage'
+  autoload :Store, 'dockmaster/parser/store'
 end
 
-storage_ary = Dockmaster::DocParser.begin
-storage_ary.each { |s| Dockmaster::Output.start_processing(s) }
+stores = Dockmaster::DocParser.begin
+stores.each { |s| Dockmaster::Output.start_processing(s) }

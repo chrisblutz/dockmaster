@@ -4,29 +4,29 @@ require 'erb'
 module Dockmaster
   class Output
     class << self
-      def start_processing(storage)
+      def start_processing(store)
         load_from_files
 
         docs_dir = File.join(Dir.pwd, 'doc/')
         Dir.mkdir(docs_dir) unless File.exist?(docs_dir)
 
-        process(storage)
+        process(store)
       end
 
-      def process(storage)
-        if storage.type == :none
-          output = @index_renderer.result(storage.erb_binding)
+      def process(store)
+        if store.type == :none
+          output = @index_renderer.result(store.erb_binding)
           write_to_file(File.join(Dir.pwd, 'doc/index.html'), output)
-        elsif storage.type == :module
-          output = @module_renderer.result(storage.erb_binding)
-          write_to_file(File.join(Dir.pwd, "doc/#{storage.path}.html"), output)
-          mod_dir = File.join(Dir.pwd, "doc/#{storage.path}")
-          Dir.mkdir(mod_dir) unless storage.children.empty? || File.exist?(mod_dir)
-        elsif storage.type == :class
-          output = @class_renderer.result(storage.erb_binding)
-          write_to_file(File.join(Dir.pwd, "doc/#{storage.path}.html"), output)
+        elsif store.type == :module
+          output = @module_renderer.result(store.erb_binding)
+          write_to_file(File.join(Dir.pwd, "doc/#{store.path}.html"), output)
+          mod_dir = File.join(Dir.pwd, "doc/#{store.path}")
+          Dir.mkdir(mod_dir) unless store.children.empty? || File.exist?(mod_dir)
+        elsif store.type == :class
+          output = @class_renderer.result(store.erb_binding)
+          write_to_file(File.join(Dir.pwd, "doc/#{store.path}.html"), output)
         end
-        storage.children.each do |child|
+        store.children.each do |child|
           process(child)
         end
       end

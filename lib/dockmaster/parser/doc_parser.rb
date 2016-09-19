@@ -1,16 +1,21 @@
-require 'erb'
 
-#
 module Dockmaster
   class DocParser
     class << self
       def begin
         files = find_all_source_files
-        storage_ary = []
+        store_ary = []
         files.each do |file|
-          storage_ary << parse(file)
+          store_ary << parse(file)
         end
-        storage_ary
+        store = Dockmaster::Store.squash(store_ary)
+
+        store_ary.each do |s|
+          puts s.inspect
+        end
+        puts store.inspect
+
+        store_ary
       end
 
       def find_all_source_files
@@ -27,12 +32,13 @@ module Dockmaster
         buffer.source = File.read(file)
         result_ary = parser.parse_with_comments(buffer)
         ast = result_ary[0]
+        puts ast.inspect
         comments = result_ary[1]
         comment_locs = parse_comment_locs(comments)
         @token_lines = []
-        storage = traverse_ast(ast, comment_locs, Dockmaster::Storage.new(nil), false)
+        store = traverse_ast(ast, comment_locs, Dockmaster::Store.new(nil), false)
 
-        storage
+        store
       end
 
       private
@@ -61,65 +67,67 @@ module Dockmaster
         comment_hash
       end
 
-      def traverse_ast(ast, comments, storage, check_children_only = true)
+      def traverse_ast(ast, comments, store, check_children_only = true)
         if check_children_only
           ast.children.each do |child|
             next unless child.class.to_s == 'Parser::AST::Node'
-            storage = perform_parse(child, comments, storage)
+            store = perform_parse(child, comments, store)
           end
         else
-          storage = perform_parse(ast, comments, storage)
+          store = perform_parse(ast, comments, store)
         end
 
-        storage
+        store
       end
 
-      def perform_parse(ast, comments, storage)
+      def perform_parse(ast, comments, store)
         @token_lines << ast.loc.line
         @token_lines << ast.loc.last_line
         if ast.type == :module
-          storage.children << define_module_in_ast(ast.loc.line, ast, comments, Dockmaster::Storage.new(storage))
+          store.children << define_module_in_ast(ast.loc.line, ast, comments, Dockmaster::Store.new(store))
         elsif ast.type == :class
-          storage.children << define_class_in_ast(ast.loc.line, ast, comments, Dockmaster::Storage.new(storage))
+          store.children << define_class_in_ast(ast.loc.line, ast, comments, Dockmaster::Store.new(store))
         elsif ast.type == :def
-          storage = define_method_in_ast(ast.loc.line, ast, comments, storage)
+          store = define_method_in_ast(ast.loc.line, ast, comments, store)
+        elsif ast.type == :casgn
+          store = define_constant_field_in_ast(ast.loc.line, ast, comments, store)
         else
-          storage = traverse_ast(ast, comments, storage)
+          store = traverse_ast(ast, comments, store)
         end
 
-        storage
+        store
       end
 
-      def define_module_in_ast(line, ast, comments, storage)
+      def define_module_in_ast(line, ast, comments, store)
         unless ast.children[0].nil?
           child = ast.children[0]
           if child.type == :const
-            storage.type = :module
-            storage.name = child.to_a[1]
-            storage.docs = closest_comment(line, comments)
-            storage = traverse_ast(ast, comments, storage)
+            store.type = :module
+            store.name = child.to_a[1]
+            store.docs = closest_comment(line, comments)
+            store = traverse_ast(ast, comments, store)
           end
         end
 
-        storage
+        store
       end
 
-      def define_class_in_ast(line, ast, comments, storage)
+      def define_class_in_ast(line, ast, comments, store)
         unless ast.children[0].nil?
           child = ast.children[0]
           if child.type == :const
-            storage.type = :class
-            storage.name = child.to_a[1]
-            storage.docs = closest_comment(line, comments)
+            store.type = :class
+            store.name = child.to_a[1]
+            store.docs = closest_comment(line, comments)
             # TODO: inheritance
-            storage = traverse_ast(ast, comments, storage)
+            store = traverse_ast(ast, comments, store)
           end
         end
 
-        storage
+        store
       end
 
-      def define_method_in_ast(line, ast, comments, storage)
+      def define_method_in_ast(line, ast, comments, store)
         ast_ary = ast.to_a
         name = ast_ary[0]
         args_ast = ast_ary[1]
@@ -136,9 +144,21 @@ module Dockmaster
 
         docs = closest_comment(line, comments)
 
-        storage.methods.store(name, docs)
+        store.methods.store(name, docs)
 
-        storage
+        store
+      end
+
+      def define_constant_field_in_ast(line, ast, comments, store)
+        ast_ary = ast.to_a
+        name = ast_ary[1]
+
+        docs = closest_comment(line, comments)
+
+        # TODO: differentiate between constants and others
+        store.fields.store(name, docs)
+
+        store
       end
 
       def closest_comment_line(line, comments)
