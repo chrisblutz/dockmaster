@@ -2,9 +2,6 @@ require 'yaml'
 require 'safe_yaml'
 
 module Dockmaster
-  # test
-  # test
-  # 3
   class Configuration
     DOTFILE = '.docmaster.yml'.freeze
     class << self

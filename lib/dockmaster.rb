@@ -8,11 +8,13 @@ require 'parser/current'
 # Internal dependencies
 require 'dockmaster/version'
 
+# Test docs
 module Dockmaster
   autoload :Configuration, 'dockmaster/configuration'
   autoload :DocParser, 'dockmaster/parser/doc_parser'
+  autoload :Output, 'dockmaster/output/output'
   autoload :Storage, 'dockmaster/parser/storage'
 end
 
-puts Dockmaster::DocParser.find_all_source_files
-Dockmaster::DocParser.parse('lib/dockmaster/configuration.rb')
+storage_ary = Dockmaster::DocParser.begin
+storage_ary.each { |s| Dockmaster::Output.start_processing(s) }

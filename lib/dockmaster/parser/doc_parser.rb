@@ -1,7 +1,18 @@
+require 'erb'
 
+#
 module Dockmaster
   class DocParser
     class << self
+      def begin
+        files = find_all_source_files
+        storage_ary = []
+        files.each do |file|
+          storage_ary << parse(file)
+        end
+        storage_ary
+      end
+
       def find_all_source_files
         # TODO: Allow changing source folder
         home = File.join(Dir.pwd, '/lib')
@@ -16,12 +27,12 @@ module Dockmaster
         buffer.source = File.read(file)
         result_ary = parser.parse_with_comments(buffer)
         ast = result_ary[0]
-        puts ast.inspect
         comments = result_ary[1]
         comment_locs = parse_comment_locs(comments)
         @token_lines = []
-        storage = traverse_ast(ast, comment_locs, Dockmaster::Storage.new(nil))
-        puts storage.inspect
+        storage = traverse_ast(ast, comment_locs, Dockmaster::Storage.new(nil), false)
+
+        storage
       end
 
       private
@@ -50,21 +61,32 @@ module Dockmaster
         comment_hash
       end
 
-      def traverse_ast(ast, comments, storage)
-        ast.children.each do |child|
-          next unless child.class.to_s == 'Parser::AST::Node'
-          @token_lines << child.loc.line
-          @token_lines << child.loc.last_line
-          if child.type == :module
-            storage.children << define_module_in_ast(child.loc.line, child, comments, Dockmaster::Storage.new(storage))
-          elsif child.type == :class
-            storage.children << define_class_in_ast(child.loc.line, child, comments, Dockmaster::Storage.new(storage))
-          elsif child.type == :def
-            storage = define_method_in_ast(child.loc.line, child, comments, storage)
-          else
-            storage = traverse_ast(child, comments, storage)
+      def traverse_ast(ast, comments, storage, check_children_only = true)
+        if check_children_only
+          ast.children.each do |child|
+            next unless child.class.to_s == 'Parser::AST::Node'
+            storage = perform_parse(child, comments, storage)
           end
+        else
+          storage = perform_parse(ast, comments, storage)
         end
+
+        storage
+      end
+
+      def perform_parse(ast, comments, storage)
+        @token_lines << ast.loc.line
+        @token_lines << ast.loc.last_line
+        if ast.type == :module
+          storage.children << define_module_in_ast(ast.loc.line, ast, comments, Dockmaster::Storage.new(storage))
+        elsif ast.type == :class
+          storage.children << define_class_in_ast(ast.loc.line, ast, comments, Dockmaster::Storage.new(storage))
+        elsif ast.type == :def
+          storage = define_method_in_ast(ast.loc.line, ast, comments, storage)
+        else
+          storage = traverse_ast(ast, comments, storage)
+        end
+
         storage
       end
 

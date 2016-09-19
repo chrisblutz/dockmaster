@@ -1,6 +1,8 @@
 module Dockmaster
   class Storage
     attr_reader :parent
+    attr_reader :path
+    attr_reader :rb_string
     attr_writer :children
     attr_writer :docs
     attr_writer :fields
@@ -10,6 +12,17 @@ module Dockmaster
 
     def initialize(parent)
       @parent = parent
+      return if parent.nil?
+      @path = if parent.path.nil?
+                ''
+              else
+                parent.path + File::SEPARATOR
+              end
+      @rb_string = if parent.rb_string.nil?
+                     ''
+                   else
+                     parent.rb_string + '::'
+                   end
     end
 
     def children
@@ -26,6 +39,12 @@ module Dockmaster
 
     def methods
       @methods ||= {}
+    end
+
+    def name=(name)
+      @name = name
+      @path += name.to_s unless @path.nil?
+      @rb_string += name.to_s unless @rb_string.nil?
     end
 
     def name
@@ -51,6 +70,10 @@ module Dockmaster
 
     def inspect
       to_indented_string(0)
+    end
+
+    def erb_binding
+      binding
     end
 
     private
