@@ -2,10 +2,9 @@ module Dockmaster
   class Store
     class << self
       def squash(stores)
-        final = Store.new(nil)
-        @stored = []
+        final = stores.shift unless stores.empty?
         stores.each do |store|
-          final = merge_child(final, final, store)
+          final = perform_squash(final, store)
         end
 
         final
@@ -13,20 +12,17 @@ module Dockmaster
 
       private
 
-      def merge_child(store_parent, store_to, store_from)
-        if store_to.similar?(store_from)
-          store_to.merge_data(store_from)
-          store_to.children.each do |to_child|
-            store_from.children.each do |from_child|
-              store_to = merge_child(store_to, to_child, from_child)
+      def perform_squash(to, from)
+        if to.similar?(from)
+          to.children += from.children
+          to.docs = from.docs unless from.docs.empty?
+          to.children.each do |to_c|
+            from.children.each do |from_c|
+              to_c = perform_squash(to_c, from_c)
             end
           end
-        else
-          store_parent.children << store_from unless @stored.include?(store_from)
-          @stored << store_from
         end
-
-        store_parent
+        to
       end
     end
 
@@ -111,6 +107,22 @@ module Dockmaster
       return false if other.name != name
 
       true
+    end
+
+    def children_contains?(store)
+      children.each do |child|
+        return true if child.similar?(store)
+      end
+      false
+    end
+
+    def merge_children(store)
+      children.each do |child|
+        if child.similar?(store)
+          child.children += store.children
+          child.docs = store.docs unless store.docs.empty?
+        end
+      end
     end
 
     def merge_data(store)

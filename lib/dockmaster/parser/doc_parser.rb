@@ -8,11 +8,14 @@ module Dockmaster
         files.each do |file|
           store_ary << parse(file)
         end
-        store = Dockmaster::Store.squash(store_ary)
 
         store_ary.each do |s|
           puts s.inspect
         end
+
+        puts '===================================='
+
+        store = Dockmaster::Store.squash(store_ary)
         puts store.inspect
 
         store_ary
