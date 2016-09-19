@@ -1,7 +1,10 @@
 Metrics/AbcSize:
-  Max: 20
+  Enabled: False
+  Max: 25
+Metrics/ClassLength:
+  Max: 150
 Metrics/LineLength:
-  Max: 100
+  Max: 120
 Metrics/MethodLength:
   CountComments: false
   Max: 20
