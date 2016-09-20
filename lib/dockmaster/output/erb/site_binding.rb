@@ -36,13 +36,23 @@ module Dockmaster
       str = '<a id="lc-list" href="'
       str += "/#{store.path}.html"
       str += '">'
-      str += store.rb_string
+      str += format_rb_string(store.rb_string)
       str += "</a>\n"
 
       store.children.each do |c|
         str += create_list(c)
       end
 
+      str
+    end
+
+    def format_rb_string(rb_string)
+      parts = rb_string.split('::')
+      str = ''
+      (0..parts.length - 1).each do |i|
+        str += parts[i]
+        str += '&thinsp;<strong>::</strong>&thinsp;' if i < parts.length - 1
+      end
       str
     end
   end

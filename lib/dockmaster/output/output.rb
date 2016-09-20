@@ -60,7 +60,12 @@ module Dockmaster
       private
 
       def form_output(renderer, master_store, store)
-        @site_renderer.result(SiteBinding.new(master_store, store, renderer).erb_binding) { renderer.result(store.erb_binding) }
+        @site_renderer.result(site_binding(master_store, store, renderer)) { renderer.result(store.erb_binding) }
+      end
+
+      def site_binding(master_store, store, renderer)
+        binding = SiteBinding.new(master_store, store, renderer)
+        binding.erb_binding
       end
 
       def write_to_file(filename, output)

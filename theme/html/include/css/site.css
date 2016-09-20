@@ -21,6 +21,16 @@ hr {
     padding-bottom: 60px;
 }
 
+#lc-list-header {
+    background: #a6a6a6;
+    border-bottom: 1px solid #808080;
+    text-align: left;
+    padding: 4px 20px;
+    font-family: 'roboto', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+}
+
 #lc-scroll {
     height: 100%;
     overflow-y: auto;
@@ -46,11 +56,14 @@ hr {
 }
 
 #lc-list:hover {
-    background: #e6e6e6;
+    background: #d9d9d9;
 }
 
 #content {
     position: relative;
     margin-left: 340px;
     padding-right: 15px;
+}
+
+
 }
