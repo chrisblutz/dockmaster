@@ -9,15 +9,12 @@ module Dockmaster
           store = parse(file, store)
         end
 
-        puts store.inspect
-
         store
       end
 
       def find_all_source_files
         # TODO: Allow changing source folder
-        home = File.join(Dir.pwd, '/lib')
-        Dir["#{home}/**/*.rb"]
+        Dir["#{Dir.pwd}/**/*.rb"]
       end
 
       def parse(file, store)
@@ -76,6 +73,7 @@ module Dockmaster
       end
 
       def perform_parse(ast, comments, store)
+        return store if ast.nil? || ast.loc.nil?
         @token_lines << ast.loc.line
         @token_lines << ast.loc.last_line
         store = if ast.type == :module

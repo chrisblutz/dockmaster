@@ -3,40 +3,39 @@ require 'safe_yaml'
 
 module Dockmaster
   class Configuration
-    DOTFILE = '.docmaster.yml'.freeze
+    DOTFILE = '.dockmaster.yml'.freeze
     class << self
-      # test again
-      # test again
       def load_file
         dockmaster_yml = File.join(Dir.pwd, DOTFILE)
 
-        # test
         hash = {}
 
-        # test2
         if File.exist?(dockmaster_yml)
-          yaml = IO.read(dockmaster_yml.path, encoding: 'UTF-8')
-          hash = load_safe_yaml(yaml, dockmaster_yml.path)
+          yaml = IO.read(dockmaster_yml, encoding: 'UTF-8')
+          hash = load_safe_yaml(yaml, dockmaster_yml)
         end
 
-        @config = hash
+        Configuration.new(hash)
       end
 
-      # test again and again
       def load_safe_yaml(yaml, filename)
-        if YAML.respond_to?(:safe_load)
-          if defined?(SafeYAML) && SafeYAML.respond_to?(:load)
-            SafeYAML.load(yaml, filename)
-          else
-            Yaml.safe_load(yaml, [Regexp], [], false, filename)
-          end
-        else
-          YAML.load(yaml, filename)
-        end
+        SafeYAML.load(yaml, filename)
       end
+    end
 
-      def test
-      end
+    attr_reader :title
+    attr_reader :output_dir
+    attr_reader :full_output_dir
+    attr_reader :excluded_files
+
+    def initialize(hash)
+      @title = "#{File.basename(Dir.pwd)} Documentation"
+      @title = hash['title'] if hash.key?('title')
+      @output_dir = 'doc/'
+      @output_dir = hash['output_dir'] if hash.key?('output_dir')
+      @full_output_dir = File.join(Dir.pwd, @output_dir)
+      @excluded_files = []
+      @excluded_files = hash['excluded_files'] if hash.key?('excluded_files')
     end
   end
 end

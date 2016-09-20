@@ -1,5 +1,3 @@
 # THIS IS A DUMMY FILE, AND WILL BE IMPLEMENTED LATER
 title: Dockmaster Documentation
-source:
-  - lib/
-output: docs/
+output_dir: doc/

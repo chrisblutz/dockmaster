@@ -1,0 +1,21 @@
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="/css/site.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Condensed|Roboto+Mono">
+        <title>Documentation (<%= Dockmaster::CONFIG.title %>)</title>
+    </head>
+    <body>
+        <div id="left-column">
+            <a id="lc-title" href="/index.html">
+                <span><%= Dockmaster::CONFIG.title %></span>
+            </a>
+            <hr/>
+            <div id="lc-scroll">
+                <%= list_all %>
+            </div>
+        </div>
+        <div id="content">
+            <%= render %>
+        </div>
+    </body>
+</html>

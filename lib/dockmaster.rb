@@ -14,6 +14,8 @@ module Dockmaster
   autoload :DocParser, 'dockmaster/parser/doc_parser'
   autoload :Output, 'dockmaster/output/output'
   autoload :Store, 'dockmaster/parser/store'
+
+  CONFIG = Configuration.load_file
 end
 
 store = Dockmaster::DocParser.begin

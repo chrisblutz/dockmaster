@@ -3,8 +3,12 @@ Metrics/AbcSize:
   Max: 25
 Metrics/ClassLength:
   Max: 150
+Metrics/CyclomaticComplexity:
+  Max: 8
 Metrics/LineLength:
   Max: 120
 Metrics/MethodLength:
   CountComments: false
   Max: 20
+Metrics/PerceivedComplexity:
+  Max: 8
