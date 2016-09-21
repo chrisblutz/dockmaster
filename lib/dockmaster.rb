@@ -11,6 +11,7 @@ require 'dockmaster/version'
 # Test docs
 module Dockmaster
   autoload :Configuration, 'dockmaster/configuration'
+  autoload :Data, 'dockmaster/parser/data'
   autoload :DocParser, 'dockmaster/parser/doc_parser'
   autoload :Output, 'dockmaster/output/output'
   autoload :Store, 'dockmaster/parser/store'

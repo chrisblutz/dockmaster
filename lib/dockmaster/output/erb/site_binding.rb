@@ -1,3 +1,5 @@
+require 'unparser'
+
 module Dockmaster
   class SiteBinding
     def initialize(master_store, store, renderer)
@@ -10,6 +12,26 @@ module Dockmaster
 
     def render
       @renderer.result(@store.erb_binding)
+    end
+
+    def render_method(name)
+      if @store.method_data.key?(name)
+        data = @store.method_data[name]
+        code = Unparser.unparse(data.ast)
+        code = "# File '#{data.file.sub(Dir.pwd, '')}', line #{data.line}\n#{code}"
+        return code.gsub('<', '&lt;').gsub('>', '&gt;')
+      end
+      ''
+    end
+
+    def render_field(name)
+      if @store.field_data.key?(name)
+        data = @store.field_data[name]
+        code = Unparser.unparse(data.ast)
+        code = "# File '#{data.file.sub(Dir.pwd, '')}', line #{data.line}\n#{code}"
+        return code.gsub('<', '&lt;').gsub('>', '&gt;')
+      end
+      ''
     end
 
     def list_all

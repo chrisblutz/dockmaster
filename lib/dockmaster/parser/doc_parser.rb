@@ -18,6 +18,7 @@ module Dockmaster
       end
 
       def parse(file, store)
+        @file = file
         parser = Parser::CurrentRuby.new
         parser.diagnostics.all_errors_are_fatal = true
         parser.diagnostics.ignore_warnings = true
@@ -144,6 +145,7 @@ module Dockmaster
         docs = closest_comment(line, comments)
 
         store.methods.store(name, docs)
+        store.method_data.store(name, Dockmaster::Data.new(@file, ast, line))
 
         store
       end
@@ -156,6 +158,7 @@ module Dockmaster
 
         # TODO: differentiate between constants and others
         store.fields.store(name, docs)
+        store.field_data.store(name, Dockmaster::Data.new(@file, ast, line))
 
         store
       end
