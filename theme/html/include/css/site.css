@@ -1,6 +1,6 @@
 body {
     margin: 0;
-    background: #f2f2f2;
+    background: #e0e0e0;
     font-family: 'roboto condensed', sans-serif;
 }
 
@@ -60,7 +60,33 @@ hr {
 }
 
 #content {
-    position: relative;
-    margin-left: 340px;
+    margin-left: 300px;
+    padding-left: 40px;
     padding-right: 15px;
+    padding-bottom: 30px;
+    background: #f2f2f2;
+    font-family: 'roboto', sans-serif;
+}
+
+#footer {
+    margin-left: 300px;
+}
+
+#generated-by {
+    padding-right: 40px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    float: right;
+    font-family: 'roboto condensed', sans-serif;
+    color: #1a1a1a;
+}
+
+#generated-by-link {
+    font-weight: 600;
+    text-decoration: none;
+    color: #1a1a1a;
+}
+
+#generated-by-link:hover {
+    color: #404040;
 }

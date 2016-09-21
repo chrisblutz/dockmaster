@@ -28,23 +28,25 @@ module Dockmaster
       if @store.field_data.key?(name)
         data = @store.field_data[name]
         code = Unparser.unparse(data.ast)
-        code = "# File '#{data.file.sub(Dir.pwd, '')}', line #{data.line}\n#{code}"
+        code = "# File '#{data.file.sub(Dir.pwd, '')}', line #{data.line}\n\n#{code}"
         return code.gsub('<', '&lt;').gsub('>', '&gt;')
       end
       ''
     end
 
     def list_all
-      puts @master_store.inspect
+      strs = {}
+      @master_store.children.each do |c|
+        strs.merge!(create_list(c))
+      end
 
       str = ''
-      @master_store.children.each do |c|
-        str += create_list(c)
+
+      Hash[strs.sort].each do |_, value|
+        str += "#{value}\n"
       end
 
       str.rstrip!
-
-      puts str
       str
     end
 
@@ -55,17 +57,21 @@ module Dockmaster
     private
 
     def create_list(store)
+      strs = {}
+
       str = '<a id="lc-list" href="'
       str += "/#{store.path}.html"
       str += '">'
       str += format_rb_string(store.rb_string)
-      str += "</a>\n"
+      str += '</a>'
+
+      strs.store(store.rb_string, str)
 
       store.children.each do |c|
-        str += create_list(c)
+        strs.merge!(create_list(c))
       end
 
-      str
+      strs
     end
 
     def format_rb_string(rb_string)

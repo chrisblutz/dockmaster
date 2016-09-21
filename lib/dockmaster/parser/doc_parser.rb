@@ -1,3 +1,4 @@
+require 'stringio'
 
 module Dockmaster
   class DocParser
@@ -19,6 +20,7 @@ module Dockmaster
 
       def parse(file, store)
         @file = file
+
         parser = Parser::CurrentRuby.new
         parser.diagnostics.all_errors_are_fatal = true
         parser.diagnostics.ignore_warnings = true

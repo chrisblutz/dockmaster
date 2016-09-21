@@ -1,15 +1,17 @@
 #!/usr/bin/env ruby
 STDOUT.sync = true
 
-$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), *%w(.. lib)))
+$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '/../lib'))
 
 require 'dockmaster'
-require 'mercenary'
+require 'benchmark'
 
-Mercenary.program(:dockmaster) do |prog|
-  prog.version Dockmaster::VERSION
-  prog.syntax 'dockmaster <subcommand> [options]'
+cli = Dockmaster::CLI.new
+result = 0
 
-  prog.action do |args, _|
-  end
+time = Benchmark.realtime do
+  result = cli.execute
 end
+
+puts "Finished in #{time.round(2)} seconds!" if cli.options[:debug]
+exit result
