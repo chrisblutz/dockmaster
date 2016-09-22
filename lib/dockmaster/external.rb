@@ -1,3 +1,5 @@
+require 'stringio'
+
 module Dockmaster
   class External
     class << self

@@ -37,9 +37,7 @@ module Dockmaster
     attr_writer :children
     attr_writer :docs
     attr_writer :fields
-    attr_writer :field_data
     attr_writer :methods
-    attr_writer :method_data
     attr_writer :type
 
     def initialize(parent, type, name)
@@ -74,16 +72,8 @@ module Dockmaster
       @fields ||= {}
     end
 
-    def field_data
-      @field_data ||= {}
-    end
-
     def methods
       @methods ||= {}
-    end
-
-    def method_data
-      @method_data ||= {}
     end
 
     def name

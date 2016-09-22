@@ -1,6 +1,5 @@
 require 'erb'
 require 'fileutils'
-require 'stringio'
 
 require 'dockmaster/output/erb/site_binding'
 require 'dockmaster/output/erb/store_binding'
