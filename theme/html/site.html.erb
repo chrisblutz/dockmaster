@@ -21,14 +21,14 @@
             </div>
         </div>
         <div id="content">
-            <% @store.methods.each do |name, _| %>
+            <% @store.method_data.each do |name, _| %>
             <pre>
                     <code class="lang-ruby">
 <%= render_method(name) %>
                     </code>
                 </pre>
             <% end %>
-            <% @store.fields.each do |name, _| %>
+            <% @store.field_data.each do |name, _| %>
             <pre>
                     <code class="lang-ruby">
 <%= render_field(name) %>

@@ -36,8 +36,8 @@ module Dockmaster
     attr_reader :rb_string
     attr_writer :children
     attr_writer :docs
-    attr_writer :fields
-    attr_writer :methods
+    attr_writer :field_data
+    attr_writer :method_data
     attr_writer :type
 
     def initialize(parent, type, name)
@@ -68,12 +68,12 @@ module Dockmaster
       @docs ||= ''
     end
 
-    def fields
-      @fields ||= {}
+    def field_data
+      @field_data ||= {}
     end
 
-    def methods
-      @methods ||= {}
+    def method_data
+      @method_data ||= {}
     end
 
     def name
@@ -116,16 +116,16 @@ module Dockmaster
 
     def append_field_and_method_strings(str, level)
       unless fields.empty?
-        fields.each do |name, docs|
+        field_data.each do |name, data|
           str += "#{'  ' * level}(field, #{name}"
-          str += ", #{docs.inspect}" unless docs.empty?
+          str += ", #{data.docs.inspect}" unless data.docs.empty?
           str += ")\n"
         end
       end
-      unless methods.empty?
-        methods.each do |name, docs|
+      unless method_data.empty?
+        method_data.each do |name, data|
           str += "#{'  ' * level}(method, #{name}"
-          str += ", #{docs.inspect}" unless docs.empty?
+          str += ", #{data.docs.inspect}" unless data.docs.empty?
           str += ")\n"
         end
       end

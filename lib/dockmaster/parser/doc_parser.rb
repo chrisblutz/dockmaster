@@ -28,7 +28,6 @@ module Dockmaster
         buffer.source = File.read(file)
         result_ary = parser.parse_with_comments(buffer)
         ast = result_ary[0]
-        puts ast
         comments = result_ary[1]
         comment_locs = parse_comment_locs(comments)
         @token_lines = []
@@ -90,8 +89,6 @@ module Dockmaster
                   define_method_in_ast(ast.loc.line, ast, comments, store)
                 elsif ast.type == :casgn
                   define_constant_field_in_ast(ast.loc.line, ast, comments, store)
-                elsif ast.type == :send
-                  @private = true if ast.to_a[2] == :private
                 else
                   traverse_ast(ast, comments, store)
                 end
@@ -107,13 +104,13 @@ module Dockmaster
 
             module_store = Dockmaster::Store.from_cache(store, :module, child.to_a[1])
             module_store.docs = closest_comment(line, comments)
-            priv_save = @private
-            inst_save = @instance
-            @private = false
-            @instance = true
+            # priv_save = @private
+            # inst_save = @instance
+            # @private = false
+            # @instance = true
             module_store = traverse_ast(ast, comments, module_store)
-            @private = priv_save
-            @instance = inst_save
+            # @private = priv_save
+            # @instance = inst_save
 
             store.children << module_store unless in_cache
           end
@@ -130,14 +127,14 @@ module Dockmaster
 
             class_store = Dockmaster::Store.from_cache(store, :class, child.to_a[1])
             class_store.docs = closest_comment(line, comments)
-            priv_save = @private
-            inst_save = @instance
-            @private = false
-            @instance = true
+            # priv_save = @private
+            # inst_save = @instance
+            # @private = false
+            # @instance = true
             # TODO: inheritance
             class_store = traverse_ast(ast, comments, class_store)
-            @private = priv_save
-            @instance = inst_save
+            # @private = priv_save
+            # @instance = inst_save
 
             store.children << class_store unless in_cache
           end
@@ -163,7 +160,7 @@ module Dockmaster
 
         docs = closest_comment(line, comments)
 
-        store.methods.store(name, Dockmaster::Data.new(docs, @file, ast, line, @instance, @private))
+        store.method_data.store(name, Dockmaster::Data.new(docs, @file, ast, line, @instance, @private))
 
         store
       end
@@ -175,7 +172,7 @@ module Dockmaster
         docs = closest_comment(line, comments)
 
         # TODO: differentiate between constants and others
-        store.fields.store(name, Dockmaster::Data.new(docs, @file, ast, line, @instance, @private))
+        store.field_data.store(name, Dockmaster::Data.new(docs, @file, ast, line, @instance, @private))
 
         store
       end
