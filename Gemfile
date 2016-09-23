@@ -8,4 +8,5 @@ gem 'unparser', '~> 0.2'
 group :test do
   gem 'rspec', '~> 3.5'
   gem 'rubocop'
+  gem "codeclimate-test-reporter", require: nil
 end
