@@ -11,7 +11,8 @@ engines:
   fixme:
     enabled: true
 ratings:
-  - "**.css"
-  - "**.rb"
+  paths:
+    - "**.css"
+    - "**.rb"
 exclude_paths:
   - spec/
