@@ -4,10 +4,6 @@ rvm:
   - 2.2
   - 2.3.0
   - ruby-head
-matrix:
-  include:
-    - rvm: jruby
-      env: JRUBY_OPTS="--debug --2.1"
 cache: bundler
 before_script: bundle update
 script:
