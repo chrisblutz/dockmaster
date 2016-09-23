@@ -1,0 +1,17 @@
+engines:
+  rubocop:
+    enabled: true
+  csslint:
+    enabled: true
+  duplication:
+    enabled: true
+    config:
+      languages:
+        - ruby
+  fixme:
+    enabled: true
+ratings:
+  - "**.css"
+  - "**.rb"
+exclude_paths:
+  - spec/
