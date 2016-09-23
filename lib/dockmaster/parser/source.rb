@@ -3,7 +3,7 @@ module Dockmaster
   # and sorts out the ones
   # excluded by the
   # .dockmaster.yml file
-  module Store
+  module Source
     module_function
 
     def find_all_source_files

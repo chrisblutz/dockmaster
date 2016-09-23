@@ -6,11 +6,11 @@ module Dockmaster
     class << self
       attr_reader :cache
 
-      def in_cache?(_parent, _type, _name)
+      def in_cache?(parent, type, name)
         @cache ||= []
 
         @cache.each do |store|
-          return true if exists_in_cache?(store)
+          return true if exists_in_cache?(parent, type, name, store)
         end
 
         false
@@ -20,7 +20,7 @@ module Dockmaster
         @cache ||= []
 
         @cache.each do |store|
-          return store if exists_in_cache?(store)
+          return store if exists_in_cache?(parent, type, name, store)
         end
 
         new_store = Store.new(parent, type, name)
@@ -31,7 +31,7 @@ module Dockmaster
 
       private
 
-      def exists_in_cache?(store)
+      def exists_in_cache?(parent, type, name, store)
         if (!store.parent.nil? && !parent.nil? && store.parent.similar?(parent)) || (store.parent.nil? && parent.nil?)
           return true if store.type == type && store.name == name
         end
