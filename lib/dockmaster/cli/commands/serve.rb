@@ -1,6 +1,9 @@
 require 'webrick'
 
 module Dockmaster
+  # Represents the 'serve' command, which
+  # launches a WEBrick server that hosts the
+  # documentation pages for viewing
   class Serve < Command
     class << self
       def command_name

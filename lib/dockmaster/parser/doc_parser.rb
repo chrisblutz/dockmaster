@@ -1,27 +1,13 @@
 require 'stringio'
 
 module Dockmaster
+  # Parses source code and
+  # converts it into Store
+  # instances for output
   class DocParser
     class << self
       def begin
-        files = find_all_source_files
-        included = []
-        excluded = []
-
-        files.each do |file|
-          if Dockmaster::CONFIG.excluded?(file)
-            excluded << file
-          else
-            included << file
-          end
-        end
-
-        if Dockmaster.debug?
-          puts 'Excluding files:'
-          excluded.each do |file|
-            puts " - #{file.sub(Dir.pwd, '')}"
-          end
-        end
+        included = Dockmaster::Source.sort_source_files(Dockmaster::Source.find_all_source_files)
 
         store = Dockmaster::Store.new(nil, :none, '')
         included.each do |file|
@@ -30,11 +16,6 @@ module Dockmaster
         end
 
         store
-      end
-
-      def find_all_source_files
-        # TODO: Allow changing source folder
-        Dir["#{Dir.pwd}/**/*.rb"]
       end
 
       def parse_file(file, store)

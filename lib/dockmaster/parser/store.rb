@@ -1,15 +1,16 @@
 module Dockmaster
+  # Represents the storage
+  # container for parsed
+  # source files
   class Store
     class << self
       attr_reader :cache
 
-      def in_cache?(parent, type, name)
+      def in_cache?(_parent, _type, _name)
         @cache ||= []
 
         @cache.each do |store|
-          if (!store.parent.nil? && !parent.nil? && store.parent.similar?(parent)) || (store.parent.nil? && parent.nil?)
-            return true if store.type == type && store.name == name
-          end
+          return true if exists_in_cache?(store)
         end
 
         false
@@ -19,15 +20,23 @@ module Dockmaster
         @cache ||= []
 
         @cache.each do |store|
-          if (!store.parent.nil? && !parent.nil? && store.parent.similar?(parent)) || (store.parent.nil? && parent.nil?)
-            return store if store.type == type && store.name == name
-          end
+          return store if exists_in_cache?(store)
         end
 
         new_store = Store.new(parent, type, name)
         @cache << new_store
 
         new_store
+      end
+
+      private
+
+      def exists_in_cache?(store)
+        if (!store.parent.nil? && !parent.nil? && store.parent.similar?(parent)) || (store.parent.nil? && parent.nil?)
+          return true if store.type == type && store.name == name
+        end
+
+        false
       end
     end
 
@@ -114,20 +123,18 @@ module Dockmaster
 
     private
 
-    def append_field_and_method_strings(str, level)
-      unless fields.empty?
-        field_data.each do |name, data|
-          str += "#{'  ' * level}(field, #{name}"
-          str += ", #{data.docs.inspect}" unless data.docs.empty?
-          str += ")\n"
-        end
-      end
-      unless method_data.empty?
-        method_data.each do |name, data|
-          str += "#{'  ' * level}(method, #{name}"
-          str += ", #{data.docs.inspect}" unless data.docs.empty?
-          str += ")\n"
-        end
+    def append_field_and_method_strings(str, _level)
+      str = append_hash_docs(field_data, str, :field) unless field_data.empty?
+      str = append_hash_docs(method_data, str, :module) unless method_data.empty?
+
+      str
+    end
+
+    def append_hash_docs(hash_data, str, type)
+      hash_data.each do |name, data|
+        str += "#{'  ' * level}(#{type}, #{name}"
+        str += ", #{data.docs.inspect}" unless data.docs.empty?
+        str += ")\n"
       end
 
       str

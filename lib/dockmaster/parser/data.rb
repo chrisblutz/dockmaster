@@ -1,4 +1,6 @@
 module Dockmaster
+  # Represents data for a
+  # method or field in a Store
   class Data
     attr_reader :docs
     attr_reader :file

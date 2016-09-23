@@ -1,6 +1,9 @@
 require 'stringio'
 
 module Dockmaster
+  # Helps with requiring dependencies
+  # without them throwing warnings
+  # that clutter the output
   class External
     class << self
       def require_without_warnings(req)

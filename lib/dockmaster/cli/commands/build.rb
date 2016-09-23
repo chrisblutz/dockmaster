@@ -1,4 +1,6 @@
 module Dockmaster
+  # Represents the 'build' command
+  # that builds the documentation
   class Build < Command
     class << self
       def command_name

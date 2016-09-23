@@ -1,4 +1,7 @@
 module Dockmaster
+  # Represents the command-line
+  # interface and helps parse options
+  # for commands
   class CLI
     attr_reader :arguments
     attr_reader :options

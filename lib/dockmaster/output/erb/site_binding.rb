@@ -1,6 +1,8 @@
 require 'unparser'
 
 module Dockmaster
+  # Represents an ERB binding
+  # for the site.html.erb template
   class SiteBinding
     def initialize(master_store, store, renderer)
       @master_store = master_store
@@ -17,9 +19,7 @@ module Dockmaster
     def render_method(name)
       if @store.method_data.key?(name)
         data = @store.method_data[name]
-        code = Unparser.unparse(data.ast)
-        code = "# File '#{data.file.sub(Dir.pwd, '')}', line #{data.line}\n#{code}"
-        return code.gsub('<', '&lt;').gsub('>', '&gt;')
+        return render_data(data)
       end
       ''
     end
@@ -27,11 +27,15 @@ module Dockmaster
     def render_field(name)
       if @store.field_data.key?(name)
         data = @store.field_data[name]
-        code = Unparser.unparse(data.ast)
-        code = "# File '#{data.file.sub(Dir.pwd, '')}', line #{data.line}\n\n#{code}"
-        return code.gsub('<', '&lt;').gsub('>', '&gt;')
+        return render_data(data)
       end
       ''
+    end
+
+    def render_data(data)
+      code = Unparser.unparse(data.ast)
+      code = "# File '#{data.file.sub(Dir.pwd, '')}', line #{data.line}\n\n#{code}"
+      code.gsub('<', '&lt;').gsub('>', '&gt;')
     end
 
     def list_all

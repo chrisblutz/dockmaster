@@ -4,8 +4,10 @@ require 'fileutils'
 require 'dockmaster/output/erb/site_binding'
 require 'dockmaster/output/erb/store_binding'
 
-# this does something
 module Dockmaster
+  # Helps output the documentation
+  # from the theme templates to valid
+  # HTML files
   class Output
     class << self
       def start_processing(store)

@@ -2,6 +2,8 @@ require 'yaml'
 require 'safe_yaml'
 
 module Dockmaster
+  # Represents the configuration
+  # file (.dockmaster.yml) for the project
   class Configuration
     DOTFILE = '.dockmaster.yml'.freeze
     class << self

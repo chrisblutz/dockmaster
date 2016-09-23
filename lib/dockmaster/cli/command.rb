@@ -1,4 +1,6 @@
 module Dockmaster
+  # Represents a command for the
+  # command-line interface
   class Command
     class << self
       def subclasses
