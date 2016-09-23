@@ -40,6 +40,8 @@ module Dockmaster
           @options[current_arg] << arg
         end
       end
+
+      Dockmaster.debug = @options[:debug] if @options.key?(:debug)
     end
   end
 end

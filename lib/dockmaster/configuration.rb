@@ -35,7 +35,15 @@ module Dockmaster
       @output_dir = hash['output_dir'] if hash.key?('output_dir')
       @full_output_dir = File.join(Dir.pwd, @output_dir)
       @excluded_files = []
-      @excluded_files = hash['excluded_files'] if hash.key?('excluded_files')
+      @excluded_files = hash['exclude'] if hash.key?('exclude')
+    end
+
+    def excluded?(file)
+      @excluded_files.each do |ex|
+        return true if file.start_with?(File.join(Dir.pwd, ex))
+      end
+
+      false
     end
   end
 end

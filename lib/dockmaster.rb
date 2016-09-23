@@ -11,7 +11,6 @@ require 'dockmaster/cli/command'
 require 'dockmaster/cli/commands/build'
 require 'dockmaster/cli/commands/serve'
 
-# Test docs
 module Dockmaster
   autoload :CLI, 'dockmaster/cli/cli'
   autoload :Configuration, 'dockmaster/configuration'
@@ -22,6 +21,16 @@ module Dockmaster
   autoload :Store, 'dockmaster/parser/store'
 
   CONFIG = Configuration.load_file
+
+  module_function
+
+  def debug=(debug)
+    @debug = debug
+  end
+
+  def debug?
+    @debug ||= false
+  end
 end
 
 # Silence Parser version warnings

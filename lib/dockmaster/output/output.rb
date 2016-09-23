@@ -51,6 +51,13 @@ module Dockmaster
       private
 
       def form_output(renderer, master_store, store)
+        if Dockmaster.debug?
+          if store.type == :none
+            puts 'Rendering index page...'
+          else
+            puts "Rendering #{store.type} page for #{store.rb_string}..."
+          end
+        end
         @site_renderer.result(site_binding(master_store, store, renderer)) { renderer.result(store.erb_binding) }
       end
 

@@ -5,9 +5,28 @@ module Dockmaster
     class << self
       def begin
         files = find_all_source_files
-        store = Dockmaster::Store.new(nil, :none, '')
+        included = []
+        excluded = []
+
         files.each do |file|
-          store = parse(file, store)
+          if Dockmaster::CONFIG.excluded?(file)
+            excluded << file
+          else
+            included << file
+          end
+        end
+
+        if Dockmaster.debug?
+          puts 'Excluding files:'
+          excluded.each do |file|
+            puts " - #{file.sub(Dir.pwd, '')}"
+          end
+        end
+
+        store = Dockmaster::Store.new(nil, :none, '')
+        included.each do |file|
+          puts "Parsing #{file.sub(Dir.pwd, '')}..." if Dockmaster.debug?
+          store = parse_file(file, store)
         end
 
         store
@@ -18,14 +37,30 @@ module Dockmaster
         Dir["#{Dir.pwd}/**/*.rb"]
       end
 
-      def parse(file, store)
+      def parse_file(file, store)
         @file = file
 
+        buffer = Parser::Source::Buffer.new(file)
+        buffer.source = File.read(file)
+        store = parse(buffer, store)
+
+        store
+      end
+
+      def parse_string(string, store)
+        @file = '<none>'
+
+        buffer = Parser::Source::Buffer.new('(string)')
+        buffer.source = string
+        store = parse(buffer, store)
+
+        store
+      end
+
+      def parse(buffer, store)
         parser = Parser::CurrentRuby.new
         parser.diagnostics.all_errors_are_fatal = true
         parser.diagnostics.ignore_warnings = true
-        buffer = Parser::Source::Buffer.new(file)
-        buffer.source = File.read(file)
         result_ary = parser.parse_with_comments(buffer)
         ast = result_ary[0]
         comments = result_ary[1]
@@ -160,7 +195,7 @@ module Dockmaster
 
         docs = closest_comment(line, comments)
 
-        store.method_data.store(name, Dockmaster::Data.new(docs, @file, ast, line, @instance, @private))
+        store.method_data.store(name, Dockmaster::Data.new(docs, @file, ast, line))
 
         store
       end
@@ -172,7 +207,7 @@ module Dockmaster
         docs = closest_comment(line, comments)
 
         # TODO: differentiate between constants and others
-        store.field_data.store(name, Dockmaster::Data.new(docs, @file, ast, line, @instance, @private))
+        store.field_data.store(name, Dockmaster::Data.new(docs, @file, ast, line))
 
         store
       end

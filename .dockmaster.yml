@@ -1,3 +1,4 @@
-# THIS IS A DUMMY FILE, AND WILL BE IMPLEMENTED LATER
 title: Dockmaster Documentation
 output_dir: doc/
+exclude:
+  - spec/
