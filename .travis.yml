@@ -13,3 +13,6 @@ before_script: bundle update
 script:
   - bundle exec rspec
 # - bundle exec rubocop
+addons:
+    code_climate:
+        repo_token: 6ae386ea5e3e0f8f3a390e6fb2fd5448bf82205026d3427938c12a4254ed5735
