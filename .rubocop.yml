@@ -12,3 +12,5 @@ Metrics/MethodLength:
   Max: 20
 Metrics/PerceivedComplexity:
   Max: 8
+EndOfLine:
+  Enabled: false

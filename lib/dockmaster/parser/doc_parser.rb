@@ -111,29 +111,25 @@ module Dockmaster
       end
 
       def define_module_in_ast(line, ast, comments, store)
-        unless (child = valid_child(ast)).nil?
-          in_cache = Dockmaster::Store.in_cache?(store, :module, child.to_a[1])
-
-          module_store = Dockmaster::Store.from_cache(store, :module, child.to_a[1])
-          module_store.docs = closest_comment(line, comments)
-          module_store = traverse_ast(ast, comments, module_store)
-
-          store.children << module_store unless in_cache
-        end
-
-        store
+        define_in_ast(:module, line, ast, comments, store)
       end
 
       def define_class_in_ast(line, ast, comments, store)
+        define_in_ast(:class, line, ast, comments, store)
+      end
+
+      def define_in_ast(type, line, ast, comments, store)
         unless (child = valid_child(ast)).nil?
-          in_cache = Dockmaster::Store.in_cache?(store, :class, child.to_a[1])
+          in_cache = Dockmaster::Store.in_cache?(store, type, child.to_a[1])
 
-          class_store = Dockmaster::Store.from_cache(store, :class, child.to_a[1])
-          class_store.docs = closest_comment(line, comments)
-          # TODO: inheritance
-          class_store = traverse_ast(ast, comments, class_store)
+          sub_store = Dockmaster::Store.from_cache(store, type, child.to_a[1])
+          sub_store.docs = closest_comment(line, comments)
 
-          store.children << class_store unless in_cache
+          yield if block_given?
+
+          sub_store = traverse_ast(ast, comments, sub_store)
+
+          store.children << sub_store unless in_cache
         end
 
         store
