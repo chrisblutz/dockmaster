@@ -7,7 +7,6 @@ module Dockmaster
     module_function
 
     def find_all_source_files
-      # TODO: Allow changing source folder
       Dir["#{Dir.pwd}/**/*.rb"]
     end
 
