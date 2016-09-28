@@ -21,7 +21,12 @@ hr {
     padding-bottom: 60px;
 }
 
+#lc-title{
+  height: 80px;
+}
+
 #lc-list-header {
+  height: 20px;
     background: #a6a6a6;
     border-bottom: 1px solid #808080;
     text-align: left;
