@@ -15,6 +15,7 @@ environment:
     - RUBY_VERSION: '23'
     - RUBY_VERSION: '22'
     - RUBY_VERSION: '21'
+    - RUBY_VERSION: '200'
 
 test_script:
   - ruby -v
