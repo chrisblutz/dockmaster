@@ -1,0 +1,13 @@
+Gem::Specification.new do |s|
+  s.name      = <%= theme_name.inspect %>
+  s.version   = '0.1.0'
+  s.license   = 'MIT'
+  s.authors   = [<%= username.inspect %>]
+  s.email     = [<%= user_email.inspect %>]
+
+  s.summary   = 'TODO: Write a short summary of your theme here.'
+  s.homepage  = "TODO: Put your gem's website or public repository URL here."
+
+  s.add_development_dependency 'dockmaster', '~> <%= dockmaster_version %>'
+  s.add_development_dependency 'bundler', '~> 1.13'
+end
