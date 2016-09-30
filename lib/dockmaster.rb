@@ -1,8 +1,5 @@
 $LOAD_PATH.unshift(File.dirname(File.realpath(__FILE__)) + '/../lib')
 
-# External dependencies
-require 'colorize'
-
 # Internal dependencies
 require 'dockmaster/version'
 
