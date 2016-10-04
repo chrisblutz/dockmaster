@@ -11,6 +11,7 @@ matrix:
   allow_failures:
     - rvm: ruby-head
     - rvm: rbx-2
+  fast_finish: true
 cache: bundler
 before_script: bundle update
 script:
