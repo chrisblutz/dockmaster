@@ -8,6 +8,9 @@ matrix:
     - rvm: jruby-9.0.1.0
       env: JRUBY_OPTS='--debug'
     - rvm: rbx-2
+  allow_failures:
+    - rvm: ruby-head
+    - rvm: rbx-2
 cache: bundler
 before_script: bundle update
 script:
