@@ -27,7 +27,7 @@ module Dockmaster
     def execute
       if @command.nil?
         # Build if no command
-        build_docs
+        build_docs unless Dockmaster.no_build?
       else
         @command.run(self)
       end

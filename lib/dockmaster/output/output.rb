@@ -14,7 +14,7 @@ module Dockmaster
         load_from_files
 
         docs_dir = File.join(Dir.pwd, Dockmaster::CONFIG.output_dir)
-        Dir.mkdir(docs_dir) unless File.exist?(docs_dir)
+        FileUtils.mkdir_p(docs_dir) unless File.exist?(docs_dir)
 
         move_includes
 
@@ -22,16 +22,16 @@ module Dockmaster
       end
 
       def process(master_store, store)
+        renderer = nil
         if store.type == :none
-          output = form_output(@index_renderer, master_store, store)
-          write_to_file(File.join(Dir.pwd, "#{Dockmaster::CONFIG.output_dir}/index.html"), output)
+          renderer = @index_renderer
         elsif store.type == :module
-          output = form_output(@module_renderer, master_store, store)
-          write_to_file(File.join(Dir.pwd, "#{Dockmaster::CONFIG.output_dir}/#{store.path}.html"), output)
+          renderer = @module_renderer
         elsif store.type == :class
-          output = form_output(@class_renderer, master_store, store)
-          write_to_file(File.join(Dir.pwd, "#{Dockmaster::CONFIG.output_dir}/#{store.path}.html"), output)
+          renderer = @class_renderer
         end
+        return if renderer.nil?
+        perform_write(renderer, master_store, store)
         store.children.each do |child|
           process(master_store, child)
         end
@@ -66,7 +66,14 @@ module Dockmaster
         binding.erb_binding
       end
 
-      def write_to_file(filename, output)
+      def perform_write(renderer, master_store, store)
+        output = form_output(renderer, master_store, store)
+        name = 'index' if store.type == :none
+        path = "#{Dockmaster::CONFIG.output_dir}/#{name || store.path}.html"
+        write_file(File.join(Dir.pwd, path), output)
+      end
+
+      def write_file(filename, output)
         Dir.mkdir(File.dirname(filename)) unless File.exist?(File.dirname(filename))
         File.open(filename, 'w') { |f| f.write(output) }
       end

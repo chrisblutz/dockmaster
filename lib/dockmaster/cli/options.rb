@@ -10,6 +10,7 @@ module Dockmaster
       def run_options(_cli, options)
         Dockmaster.debug = options[:debug] if options.key?(:debug)
         Dockmaster.serve_at_end if options[:serve]
+        Dockmaster.no_build if options['no-build'.to_sym]
 
         return unless options[:help]
 

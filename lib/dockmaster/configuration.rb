@@ -25,10 +25,10 @@ module Dockmaster
       end
     end
 
-    attr_reader :title
-    attr_reader :output_dir
-    attr_reader :full_output_dir
-    attr_reader :excluded_files
+    attr_accessor :title
+    attr_accessor :output_dir
+    attr_accessor :full_output_dir
+    attr_accessor :excluded_files
 
     def initialize(hash)
       @title = "#{File.basename(Dir.pwd)} Documentation"

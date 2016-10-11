@@ -61,6 +61,14 @@ module Dockmaster
   def serve_at_end?
     @serve_at_end ||= false
   end
+
+  def no_build
+    @no_build = true
+  end
+
+  def no_build?
+    @no_build ||= false
+  end
 end
 
 # Silence Parser version warnings
