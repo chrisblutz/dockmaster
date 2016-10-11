@@ -18,11 +18,7 @@ RSpec.configure do |config|
 
   config.shared_context_metadata_behavior = :apply_to_host_groups
 
-  config.before(:all) do
+  config.before(:suite) do
     Dockmaster::CONFIG.output_dir = 'rspec/tests/files'
-  end
-
-  config.after(:each) do
-    FileUtils.rm_rf('rspec') if File.exist?('rspec/')
   end
 end
