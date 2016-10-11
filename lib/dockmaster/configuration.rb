@@ -33,8 +33,8 @@ module Dockmaster
     def initialize(hash)
       @title = "#{File.basename(Dir.pwd)} Documentation"
       @title = hash['title'] if hash.key?('title')
-      @output_dir = 'doc/'
-      @output_dir = hash['output_dir'] if hash.key?('output_dir')
+      @output_dir = 'doc'
+      @output_dir = hash['output_dir'].chomp('/').chomp('\\') if hash.key?('output_dir')
       @full_output_dir = File.join(Dir.pwd, @output_dir)
       @excluded_files = []
       @excluded_files = hash['exclude'] if hash.key?('exclude')
