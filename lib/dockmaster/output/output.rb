@@ -28,8 +28,6 @@ module Dockmaster
         elsif store.type == :module
           output = form_output(@module_renderer, master_store, store)
           write_to_file(File.join(Dir.pwd, "#{Dockmaster::CONFIG.output_dir}/#{store.path}.html"), output)
-          mod_dir = File.join(Dir.pwd, "#{Dockmaster::CONFIG.output_dir}/#{store.path}")
-          Dir.mkdir(mod_dir) unless store.children.empty? || File.exist?(mod_dir)
         elsif store.type == :class
           output = form_output(@class_renderer, master_store, store)
           write_to_file(File.join(Dir.pwd, "#{Dockmaster::CONFIG.output_dir}/#{store.path}.html"), output)
@@ -69,6 +67,7 @@ module Dockmaster
       end
 
       def write_to_file(filename, output)
+        Dir.mkdir(File.dirname(filename)) unless File.exist?(File.dirname(filename))
         File.open(filename, 'w') { |f| f.write(output) }
       end
     end

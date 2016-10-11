@@ -5,8 +5,7 @@ require 'dockmaster/version'
 
 # Dockmaster commands
 require 'dockmaster/cli/command'
-require 'dockmaster/cli/commands/build'
-require 'dockmaster/cli/commands/serve'
+require 'dockmaster/cli/commands/theme_command'
 
 # Dockmaster is a Ruby documentation tool
 # that converts source code documentation
@@ -53,6 +52,14 @@ module Dockmaster
 
   def debug?
     @debug ||= false
+  end
+
+  def serve_at_end
+    @serve_at_end = true
+  end
+
+  def serve_at_end?
+    @serve_at_end ||= false
   end
 end
 

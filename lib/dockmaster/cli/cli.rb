@@ -1,3 +1,7 @@
+require 'dockmaster/cli/options'
+
+require 'webrick'
+
 module Dockmaster
   # Represents the command-line
   # interface and helps parse options
@@ -7,23 +11,46 @@ module Dockmaster
     attr_reader :options
 
     def initialize
-      command_str = ARGV.shift unless ARGV.empty?
-      @command = Build.class
+      parse_options
+
+      return if @arguments.empty? || @arguments[0].start_with?('--')
+
+      command_str = @arguments[0]
 
       Command.subclasses.each do |klass|
         @command = klass if command_str == klass.command_name
       end
 
-      parse_options
+      @arguments.shift unless @command.nil?
     end
 
     def execute
-      @command.run(self)
+      if @command.nil?
+        # Build if no command
+        build_docs
+      else
+        @command.run(self)
+      end
       return 0
     rescue StandardError, SyntaxError => e
       $stderr.puts e.message
       $stderr.puts e.backtrace
       return 1
+    end
+
+    def build_docs
+      store = Dockmaster::DocParser.begin
+      Dockmaster::Output.start_processing(store)
+      puts 'Documentation built successfully!'
+    end
+
+    def serve_docs
+      root = File.expand_path(File.join(Dir.pwd, Dockmaster::CONFIG.output_dir))
+      server = WEBrick::HTTPServer.new Port: 8000, DocumentRoot: root
+      trap 'INT' do
+        server.shutdown
+      end
+      server.start
     end
 
     private
@@ -44,7 +71,7 @@ module Dockmaster
         end
       end
 
-      Dockmaster.debug = @options[:debug] if @options.key?(:debug)
+      Options.run_options(self, @options)
     end
   end
 end

@@ -14,4 +14,8 @@ time = Benchmark.realtime do
 end
 
 puts "Finished in #{time.round(2)} seconds!" if cli.options[:debug]
+
+# Serve if option set
+cli.serve_docs if Dockmaster.serve_at_end?
+
 exit result
