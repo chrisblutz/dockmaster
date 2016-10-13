@@ -125,6 +125,12 @@ module Dockmaster
       true
     end
 
+    def ==(other)
+      return false if other.parent != @parent
+      return false unless similar?(other)
+      true
+    end
+
     private
 
     def append_field_and_method_strings(str, _level)
