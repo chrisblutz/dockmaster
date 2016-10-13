@@ -1,4 +1,4 @@
 title: Dockmaster Documentation
-output_dir: doc/
+output: doc/
 exclude:
   - spec/

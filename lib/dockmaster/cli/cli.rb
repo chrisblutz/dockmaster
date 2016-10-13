@@ -45,7 +45,7 @@ module Dockmaster
     end
 
     def serve_docs
-      root = File.expand_path(File.join(Dir.pwd, Dockmaster::CONFIG.output_dir))
+      root = File.expand_path(File.join(Dir.pwd, Dockmaster::CONFIG.output))
       server = WEBrick::HTTPServer.new Port: 8000, DocumentRoot: root
       trap 'INT' do
         server.shutdown

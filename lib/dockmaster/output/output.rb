@@ -13,7 +13,7 @@ module Dockmaster
       def start_processing(store)
         load_from_files
 
-        docs_dir = File.join(Dir.pwd, Dockmaster::CONFIG.output_dir)
+        docs_dir = File.join(Dir.pwd, Dockmaster::CONFIG.output)
         FileUtils.mkdir_p(docs_dir) unless File.exist?(docs_dir)
 
         move_includes
@@ -69,7 +69,7 @@ module Dockmaster
       def perform_write(renderer, master_store, store)
         output = form_output(renderer, master_store, store)
         name = 'index' if store.type == :none
-        path = "#{Dockmaster::CONFIG.output_dir}/#{name || store.path}.html"
+        path = "#{Dockmaster::CONFIG.output}/#{name || store.path}.html"
         write_file(File.join(Dir.pwd, path), output)
       end
 

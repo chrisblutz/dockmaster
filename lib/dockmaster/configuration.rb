@@ -26,16 +26,16 @@ module Dockmaster
     end
 
     attr_accessor :title
-    attr_accessor :output_dir
-    attr_accessor :full_output_dir
+    attr_accessor :output
+    attr_accessor :full_output
     attr_accessor :excluded_files
 
     def initialize(hash)
       @title = "#{File.basename(Dir.pwd)} Documentation"
       @title = hash['title'] if hash.key?('title')
-      @output_dir = 'doc'
-      @output_dir = hash['output_dir'].chomp('/').chomp('\\') if hash.key?('output_dir')
-      @full_output_dir = File.join(Dir.pwd, @output_dir)
+      @output = 'doc'
+      @output = hash['output'].chomp('/').chomp('\\') if hash.key?('output')
+      @full_output = File.join(Dir.pwd, @output)
       @excluded_files = []
       @excluded_files = hash['exclude'] if hash.key?('exclude')
     end
