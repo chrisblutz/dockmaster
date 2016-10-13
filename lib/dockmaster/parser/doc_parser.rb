@@ -12,15 +12,16 @@ module Dockmaster
         store = Dockmaster::Store.new(nil, :none, '')
         included.each do |file|
           puts "Parsing #{file.sub(Dir.pwd, '')}..." if Dockmaster.debug?
-          store = parse_file(file, store)
+          store = parse_file(file, store, false)
         end
 
         store
       end
 
-      def parse_file(file, store)
+      def parse_file(file, store, clear_cache = true)
         @file = file
 
+        Dockmaster::Store.clear_cache if clear_cache
         buffer = Parser::Source::Buffer.new(file)
         buffer.source = File.read(file)
         store = parse(buffer, store)
@@ -31,6 +32,7 @@ module Dockmaster
       def parse_string(string, store)
         @file = '<none>'
 
+        Dockmaster::Store.clear_cache
         buffer = Parser::Source::Buffer.new('(string)')
         buffer.source = string
         store = parse(buffer, store)

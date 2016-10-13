@@ -29,6 +29,10 @@ module Dockmaster
         new_store
       end
 
+      def clear_cache
+        @cache = []
+      end
+
       private
 
       def exists_in_cache?(parent, type, name, store)
