@@ -133,14 +133,14 @@ module Dockmaster
 
     private
 
-    def append_field_and_method_strings(str, _level)
-      str = append_hash_docs(field_data, str, :field) unless field_data.empty?
-      str = append_hash_docs(method_data, str, :module) unless method_data.empty?
+    def append_field_and_method_strings(str, level)
+      str = append_hash_docs(field_data, str, :field, level) unless field_data.empty?
+      str = append_hash_docs(method_data, str, :module, level) unless method_data.empty?
 
       str
     end
 
-    def append_hash_docs(hash_data, str, type)
+    def append_hash_docs(hash_data, str, type, level)
       hash_data.each do |name, data|
         str += "#{'  ' * level}(#{type}, #{name}"
         str += ", #{data.docs.inspect}" unless data.docs.empty?

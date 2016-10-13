@@ -23,4 +23,33 @@ RSpec.describe Dockmaster::Store do
       expect(store).to eq(store_check)
     end
   end
+
+  describe '#inspect' do
+    it 'returns a formatted string' do
+      source_str = <<-END
+# Test documentation
+module TestModule
+  # Test documentation
+  TEST_FIELD = 0
+
+  # Test documentation
+  def test_method
+  end
+end
+      END
+      store = Dockmaster::Store.new(nil, :none, '')
+      store = Dockmaster::DocParser.parse_string(source_str, store)
+
+      str = store.inspect
+
+      expected = <<-END
+(none, )
+  (module, TestModule, "# Test documentation")
+    (field, TEST_FIELD, "# Test documentation")
+    (module, test_method, "# Test documentation")
+      END
+
+      expect(str).to eq(expected)
+    end
+  end
 end
