@@ -135,7 +135,7 @@ module Dockmaster
 
     def append_field_and_method_strings(str, level)
       str = append_hash_docs(field_data, str, :field, level) unless field_data.empty?
-      str = append_hash_docs(method_data, str, :module, level) unless method_data.empty?
+      str = append_hash_docs(method_data, str, :method, level) unless method_data.empty?
 
       str
     end

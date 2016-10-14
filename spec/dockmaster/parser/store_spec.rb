@@ -46,7 +46,7 @@ end
 (none, )
   (module, TestModule, "# Test documentation")
     (field, TEST_FIELD, "# Test documentation")
-    (module, test_method, "# Test documentation")
+    (method, test_method, "# Test documentation")
       END
 
       expect(str).to eq(expected)
