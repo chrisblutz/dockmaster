@@ -65,4 +65,25 @@ end
       expect(mod_store.docs).to eq('# Documentation')
     end
   end
+
+  describe 'begin' do
+    it 'finds all source files and parses them into a Store' do
+      Dir.chdir('spec/files/parser_test') do
+        store = Dockmaster::DocParser.begin
+
+        expected = <<-END
+(none, )
+  (module, TestFiles)
+    (class, TestFile1, "# Test documentation for TestFile1")
+      (field, TEST1, "# A field (1)")
+      (method, test_method_1, "# A method (1)")
+    (class, TestFile2, "# Test documentation for TestFile2")
+      (field, TEST2, "# A field (2)")
+      (method, test_method_2, "# A method (2)")
+        END
+
+        expect(store.inspect).to eq(expected)
+      end
+    end
+  end
 end

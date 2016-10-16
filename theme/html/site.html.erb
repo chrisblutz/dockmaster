@@ -1,9 +1,14 @@
 <html>
     <head>
-        <link rel="stylesheet" type="text/css" href="/css/site.css">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Condensed|Roboto+Mono">
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/obsidian.min.css">
+
         <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/highlight.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.1.1.js" type="text/javascript"></script>
+
+        <link rel="stylesheet" type="text/css" href="/css/site.css">
+
+        <script src="/js/site.js"></script>
         <script>
             hljs.initHighlightingOnLoad();
         </script>
@@ -22,11 +27,15 @@
         </div>
         <div id="content">
             <% @store.method_data.each do |name, _| %>
-            <pre>
-                    <code class="lang-ruby">
+                <div class="toggle">
+                  <span class="toggle-name"><%= name %></span>
+                  <span class="toggle-type">METHOD</span>
+                </div>
+                <div class="details initially-hidden">
+                    <pre><code class="lang-ruby">
 <%= render_method(name) %>
-                    </code>
-                </pre>
+                    </code></pre>
+                </div>
             <% end %>
             <% @store.field_data.each do |name, _| %>
             <pre>
