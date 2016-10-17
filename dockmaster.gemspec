@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '>= 2.1'
 
-  s.files = 'git ls-files bin lib LICENSE.txt README.md'
+  s.files = `git ls-files bin lib LICENSE.txt README.md`.split($RS)
   s.executables << 'dockmaster'
 
   s.summary     = 'A Ruby documentation-to-webpage tool'
