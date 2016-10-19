@@ -4,6 +4,8 @@ require 'fileutils'
 require 'dockmaster/output/erb/site_binding'
 require 'dockmaster/output/erb/store_binding'
 
+require 'dockmaster/theme'
+
 module Dockmaster
   # Helps output the documentation
   # from the theme templates to valid
@@ -11,7 +13,9 @@ module Dockmaster
   class Output
     class << self
       def start_processing(store)
-        load_from_files
+        theme_home = Dockmaster::Theme.gem_source
+
+        load_from_files(theme_home)
 
         docs_dir = File.join(Dir.pwd, Dockmaster::CONFIG.output)
         FileUtils.mkdir_p(docs_dir) unless File.exist?(docs_dir)
@@ -37,11 +41,11 @@ module Dockmaster
         end
       end
 
-      def load_from_files
-        @site_renderer ||= ERB.new(File.read(File.join(Dir.pwd, 'theme/html/site.html.erb')).rstrip!)
-        @index_renderer ||= ERB.new(File.read(File.join(Dir.pwd, 'theme/html/index.html.erb')).rstrip!)
-        @module_renderer ||= ERB.new(File.read(File.join(Dir.pwd, 'theme/html/module.html.erb')).rstrip!)
-        @class_renderer ||= ERB.new(File.read(File.join(Dir.pwd, 'theme/html/class.html.erb')).rstrip!)
+      def load_from_files(theme_home)
+        @site_renderer ||= ERB.new(File.read(File.join(theme_home, 'theme/site.html.erb')).rstrip!)
+        @index_renderer ||= ERB.new(File.read(File.join(theme_home, 'theme/index.html.erb')).rstrip!)
+        @module_renderer ||= ERB.new(File.read(File.join(theme_home, 'theme/module.html.erb')).rstrip!)
+        @class_renderer ||= ERB.new(File.read(File.join(theme_home, 'theme/class.html.erb')).rstrip!)
       end
 
       def move_includes
