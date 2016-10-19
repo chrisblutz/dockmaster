@@ -5,6 +5,6 @@
 [![Test Coverage](https://codeclimate.com/github/chrisblutz/dockmaster/badges/coverage.svg)](https://codeclimate.com/github/chrisblutz/dockmaster/coverage)
 [![Code Climate](https://codeclimate.com/github/chrisblutz/dockmaster/badges/gpa.svg)](https://codeclimate.com/github/chrisblutz/dockmaster)
 
-![Dockmaster Logo](https://raw.githubusercontent.com/chrisblutz/dockmaster/master/logo/text-logo-horizontal.png)
+![Dockmaster Logo](https://raw.githubusercontent.com/chrisblutz/dockmaster/master/logo/dockmaster-logo-horizontal.png)
 
 **Dockmaster** is a work-in-progress documentation tool for Ruby.
