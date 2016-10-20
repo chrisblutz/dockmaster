@@ -8,3 +8,15 @@
 ![Dockmaster Logo](https://raw.githubusercontent.com/chrisblutz/dockmaster/master/logo/dockmaster-logo-horizontal.png)
 
 **Dockmaster** is a work-in-progress documentation tool for Ruby.
+
+## Installation
+
+*Coming soon!*
+
+## Usage
+
+*Coming soon!*
+
+## Copyright
+
+Copyright (c) 2016 Christopher Lutz.  See [LICENSE.txt](LICENSE.txt) for further details.
