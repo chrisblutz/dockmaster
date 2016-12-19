@@ -1,5 +1,5 @@
-require 'codeclimate-test-reporter'
-CodeClimate::TestReporter.start
+require 'simplecov'
+SimpleCov.start
 
 require 'dockmaster'
 
@@ -19,6 +19,10 @@ RSpec.configure do |config|
   config.shared_context_metadata_behavior = :apply_to_host_groups
 
   config.before(:suite) do
-    Dockmaster::CONFIG.output = 'rspec/tests/files'
+    Dockmaster::CONFIG[:output] = 'rspec/tests/files'
+  end
+
+  config.after(:each) do
+    FileUtils.rm_rf('rspec')
   end
 end
