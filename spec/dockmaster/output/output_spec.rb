@@ -8,13 +8,11 @@ RSpec.describe Dockmaster::Output do
 
       Dockmaster::Output.start_processing(store)
 
-      entries = Dir.entries('rspec/tests/files')
+      entries = Dir["#{Dockmaster::CONFIG[:output]}/*.html"]
       entries.delete('.')
       entries.delete('..')
 
-      expect(entries).to eq(['index.html'])
-
-      FileUtils.rm_rf('rspec')
+      expect(entries).to eq(["#{Dockmaster::CONFIG[:output]}/index.html"])
     end
   end
 
@@ -24,13 +22,11 @@ RSpec.describe Dockmaster::Output do
 
       Dockmaster::Output.start_processing(store)
 
-      entries = Dir.entries('rspec/tests/files')
+      entries = Dir["#{Dockmaster::CONFIG[:output]}/*.html"]
       entries.delete('.')
       entries.delete('..')
 
-      expect(entries).to include('index.html', 'Test.html')
-
-      FileUtils.rm_rf('rspec')
+      expect(entries).to eq(["#{Dockmaster::CONFIG[:output]}/index.html", "#{Dockmaster::CONFIG[:output]}/Test.html"])
     end
   end
 end

@@ -16,6 +16,7 @@ cache: bundler
 before_script: bundle update
 script:
   - bundle exec rspec
+  - bundle exec codeclimate-test-reporter
   - bundle exec rubocop
 addons:
     code_climate:

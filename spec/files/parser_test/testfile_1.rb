@@ -5,7 +5,6 @@ module TestFiles
     TEST1 = 'test'.freeze
 
     # A method (1)
-    def test_method_1(test)
-    end
+    def test_method_1(test) end
   end
 end

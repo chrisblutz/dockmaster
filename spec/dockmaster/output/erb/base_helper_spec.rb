@@ -1,7 +1,7 @@
-require 'dockmaster/output/erb/site_binding'
+require 'dockmaster/output/erb/base_helper'
 
-RSpec.describe Dockmaster::SiteBinding do
-  describe '#render_method' do
+RSpec.describe Dockmaster::BaseHelper do
+  describe '#method_source' do
     it 'retrieves the source for the method' do
       source_str = <<-END
 # Test documentation
@@ -22,15 +22,15 @@ end
 
       expect(mod_store.type).to eq(:module)
 
-      binding = Dockmaster::SiteBinding.new(store, mod_store, nil)
+      helper = Dockmaster::BaseHelper.new(store, mod_store)
 
-      unparsed_source = binding.render_method(:test_method)
+      unparsed_source = helper.method_source(:test_method)
 
       expected = <<-END.rstrip
-# File '&lt;none&gt;', line 4
+# File &#39;&lt;none&gt;&#39;, line 4
 
 def test_method
-  test = "test"
+  test = &quot;test&quot;
   if true
     puts(test)
   end
@@ -41,7 +41,7 @@ end
     end
   end
 
-  describe '#render_field' do
+  describe '#field_source' do
     it 'retrieves the source for the field' do
       source_str = <<-END
 # Test documentation
@@ -59,12 +59,12 @@ end
 
       expect(mod_store.type).to eq(:module)
 
-      binding = Dockmaster::SiteBinding.new(store, mod_store, nil)
+      helper = Dockmaster::BaseHelper.new(store, mod_store)
 
-      unparsed_source = binding.render_field(:TEST_FIELD)
+      unparsed_source = helper.field_source(:TEST_FIELD)
 
       expected = <<-END.rstrip
-# File '&lt;none&gt;', line 4
+# File &#39;&lt;none&gt;&#39;, line 4
 
 TEST_FIELD = 10.0
       END

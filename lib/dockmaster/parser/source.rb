@@ -15,7 +15,7 @@ module Dockmaster
       excluded = []
 
       files.each do |file|
-        if Dockmaster::CONFIG.excluded?(file)
+        if Dockmaster::Configuration.excluded?(file)
           excluded << file
         else
           included << file
