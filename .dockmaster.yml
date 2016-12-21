@@ -4,3 +4,5 @@ exclude:
   - spec/
   - lib/theme_template/
 theme: default
+plugins:
+  - sitemap

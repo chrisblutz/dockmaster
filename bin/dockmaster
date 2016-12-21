@@ -10,6 +10,9 @@ cli = Dockmaster::CLI.new
 result = 0
 
 time = Benchmark.realtime do
+  Dockmaster::External.load_theme
+  Dockmaster::External.load_plugins
+  Dockmaster::Plugin.load_plugins
   result = cli.execute
 end
 

@@ -9,25 +9,28 @@ module Dockmaster
   # from the theme templates to valid
   # HTML files
   class Output
-    def initialize(base_template)
+    attr_writer :home_dir
+
+    def initialize(base_template, home_dir)
+      @home_dir = home_dir
       filename = File.join(Dockmaster::Theme.gem_source, base_template)
       @base = ERB.new(File.read(filename).rstrip!)
       @base.filename = filename
     end
 
     def load_erb(template_path)
-      filename = File.join(Dockmaster::Theme.gem_source, template_path)
+      filename = File.join(@home_dir, template_path)
       @erb = ERB.new(File.read(filename).rstrip!)
       @erb.filename = filename
       self
     end
 
-    def render(master_store, store = nil, use_base = true)
+    def render(file_path, master_store, store = nil, use_base = true)
       return if @erb.nil?
       store = master_store if store.nil?
       if Dockmaster.debug?
         if store.type == :none
-          puts 'Rendering index page...'
+          puts 'Rendering special page...'
         else
           puts "Rendering #{store.type} page for #{store.rb_string}..."
         end
@@ -39,7 +42,7 @@ module Dockmaster
         binding_obj = site_binding(master_store, store, nil)
         @output_str = @erb.result(binding_obj)
       end
-      perform_write(store)
+      perform_write(file_path, store)
     end
 
     private
@@ -51,18 +54,11 @@ module Dockmaster
       binding.erb_binding
     end
 
-    def perform_write(store)
-      name = case store.type
-             when :module
-               Dockmaster::Theme.module_output(store)
-             when :class
-               Dockmaster::Theme.class_output(store)
-             when :none
-               Dockmaster::Theme.index_output(store)
-             end
+    def perform_write(name, store)
       path = "#{Output.docs_dir}/#{name}"
-      puts path
       write_file(path, @output_str)
+
+      Dockmaster::Plugin.fire_event(:docs_output, name, @output_str, store)
     end
 
     def write_file(filename, output)
@@ -80,11 +76,13 @@ module Dockmaster
 
         process(store, store)
 
-        misc_output = Output.new(@base_template)
+        misc_theme_output = Output.new(@base_template, Dockmaster::Theme.gem_source)
 
-        return unless Dockmaster::Theme.respond_to?(:misc_generation)
+        if Dockmaster::Theme.respond_to?(:misc_generation)
+          Dockmaster::Theme.misc_generation(store, misc_theme_output)
+        end
 
-        Dockmaster::Theme.misc_generation(store, misc_output)
+        Dockmaster::Plugin.fire_misc_generation(store, @base_template)
       end
 
       def docs_dir
@@ -96,14 +94,19 @@ module Dockmaster
 
       def process(master_store, store)
         renderer = nil
+        name = ''
         if store.type == :none
           renderer = @index_output
+          name = Dockmaster::Theme.index_output(store)
         elsif store.type == :module
           renderer = @module_output
+          name = Dockmaster::Theme.module_output(store)
         elsif store.type == :class
           renderer = @class_output
+          name = Dockmaster::Theme.class_output(store)
         end
-        renderer.render(master_store, store, true)
+
+        renderer.render(name, master_store, store, true)
         return if renderer.nil?
         store.children.each do |child|
           process(master_store, child)
@@ -112,11 +115,11 @@ module Dockmaster
 
       def load_from_files
         @base_template = Dockmaster::Theme.base_template
-        @index_output ||= Output.new(@base_template)
+        @index_output ||= Output.new(@base_template, Dockmaster::Theme.gem_source)
         @index_output.load_erb(Dockmaster::Theme.index_template)
-        @module_output ||= Output.new(@base_template)
+        @module_output ||= Output.new(@base_template, Dockmaster::Theme.gem_source)
         @module_output.load_erb(Dockmaster::Theme.module_template)
-        @class_output ||= Output.new(@base_template)
+        @class_output ||= Output.new(@base_template, Dockmaster::Theme.gem_source)
         @class_output.load_erb(Dockmaster::Theme.class_template)
       end
 

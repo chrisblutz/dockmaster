@@ -39,12 +39,11 @@ module Dockmaster
   autoload :DocParser, 'dockmaster/parser/doc_parser'
   autoload :External, 'dockmaster/external'
   autoload :Output, 'dockmaster/output/output'
+  autoload :Plugin, 'dockmaster/plugin'
   autoload :Source, 'dockmaster/parser/source'
   autoload :Store, 'dockmaster/parser/store'
 
   CONFIG = Configuration.load_file
-
-  Dockmaster::External.load_theme
 
   module_function
 

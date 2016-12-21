@@ -24,5 +24,9 @@ module Dockmaster
       return '' if @renderer.nil?
       @renderer.result(erb_binding)
     end
+
+    def plugins
+      Dockmaster::Plugin.plugins_by_id
+    end
   end
 end
