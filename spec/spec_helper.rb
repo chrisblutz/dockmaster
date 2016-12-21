@@ -19,7 +19,10 @@ RSpec.configure do |config|
   config.shared_context_metadata_behavior = :apply_to_host_groups
 
   config.before(:suite) do
+    Dockmaster::CONFIG[:plugins] = []
     Dockmaster::CONFIG[:output] = 'rspec/tests/files'
+
+    Dockmaster.load_externals
   end
 
   config.after(:each) do

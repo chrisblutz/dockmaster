@@ -70,6 +70,12 @@ module Dockmaster
   def no_build?
     @no_build ||= false
   end
+
+  def load_externals
+    Dockmaster::External.load_theme
+    Dockmaster::External.load_plugins
+    Dockmaster::Plugin.load_plugins
+  end
 end
 
 # Silence Parser version warnings
