@@ -7,10 +7,11 @@ module Dockmaster
   # interface
   class Options
     class << self
-      def run_options(_cli, options)
-        Dockmaster.debug = options[:debug] if options.key?(:debug)
-        Dockmaster.serve_at_end if options[:serve]
-        Dockmaster.no_build if options['no-build'.to_sym]
+      def run_options(_cli, short_options, options)
+        Dockmaster.debug if options.key?(:debug) || short_options.key?(:d)
+        Dockmaster.serve_at_end if options[:serve] || short_options.key?(:s)
+        Dockmaster.no_build if options['no-build'.to_sym] || short_options.key?(:n)
+        puts "Dockmaster v#{Dockmaster::VERSION}" if options[:version] || short_options.key?(:v)
 
         return unless options[:help]
 

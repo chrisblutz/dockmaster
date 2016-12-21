@@ -46,8 +46,8 @@ module Dockmaster
 
   module_function
 
-  def debug=(debug)
-    @debug = debug
+  def debug
+    @debug = true
   end
 
   def debug?

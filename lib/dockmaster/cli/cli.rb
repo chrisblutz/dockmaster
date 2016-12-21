@@ -14,7 +14,7 @@ module Dockmaster
     def initialize
       parse_options
 
-      return if @arguments.empty? || @arguments[0].start_with?('--')
+      return if @arguments.empty? || @arguments[0].start_with?('--') || @arguments[0].start_with?('-')
 
       command_str = @arguments[0]
 
@@ -70,20 +70,35 @@ module Dockmaster
     def parse_options
       @arguments = []
       @options = {}
-      current_arg = nil
+      @short_options = {}
+      @short_current = false
+      @current_arg = nil
       ARGV.each do |arg|
         if arg.start_with?('--')
-          option_sym = arg[2..-1].to_sym
-          @options[option_sym] = []
-          current_arg = option_sym
-        elsif current_arg.nil?
+          parse_option_indiv(arg[2..-1], false)
+        elsif arg.start_with?('-')
+          parse_option_indiv(arg[1..-1], true)
+        elsif @current_arg.nil?
           @arguments << arg
         else
-          @options[current_arg] << arg
+          @options[@current_arg] << arg unless @short_current
+          @short_options[@current_arg] << arg if @short_current
         end
       end
 
-      Options.run_options(self, @options)
+      Options.run_options(self, @short_options, @options)
+    end
+
+    def parse_option_indiv(arg, short)
+      option_sym = arg.to_sym
+      if short
+        @short_options[option_sym] = []
+        @short_current = true
+      else
+        @options[option_sym] = []
+        @short_current = false
+      end
+      @current_arg = option_sym
     end
   end
 end
