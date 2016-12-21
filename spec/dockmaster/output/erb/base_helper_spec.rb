@@ -27,10 +27,10 @@ end
       unparsed_source = helper.method_source(:test_method)
 
       expected = <<-END.rstrip
-# File &#39;&lt;none&gt;&#39;, line 4
+# File '<none>', line 4
 
 def test_method
-  test = &quot;test&quot;
+  test = "test"
   if true
     puts(test)
   end
@@ -64,7 +64,7 @@ end
       unparsed_source = helper.field_source(:TEST_FIELD)
 
       expected = <<-END.rstrip
-# File &#39;&lt;none&gt;&#39;, line 4
+# File '<none>', line 4
 
 TEST_FIELD = 10.0
       END

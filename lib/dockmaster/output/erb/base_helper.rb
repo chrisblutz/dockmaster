@@ -37,7 +37,7 @@ module Dockmaster
     def data_source(data)
       code = Unparser.unparse(data.ast)
       code = "# File '#{data.file.sub(Dir.pwd, '')}', line #{data.line}\n\n#{code}"
-      escape_html(code)
+      code
     end
 
     def escape_html(str)

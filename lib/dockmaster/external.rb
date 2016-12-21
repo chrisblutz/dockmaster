@@ -12,6 +12,20 @@ module Dockmaster
         end
       end
 
+      def load_theme
+        theme = Dockmaster::CONFIG[:theme]
+        theme ||= 'default'
+        theme = "dockmaster/theme/#{theme}"
+        begin
+          require(theme)
+        rescue LoadError
+          error = <<-END
+Cannot find theme '#{Dockmaster::CONFIG[:theme]}'.  It may be contained in a gem such as 'dockmaster-theme-#{Dockmaster::CONFIG[:theme]}'.
+          END
+          abort error
+        end
+      end
+
       private
 
       def silent_warnings

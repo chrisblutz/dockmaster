@@ -44,6 +44,8 @@ module Dockmaster
 
   CONFIG = Configuration.load_file
 
+  Dockmaster::External.load_theme
+
   module_function
 
   def debug=(debug)

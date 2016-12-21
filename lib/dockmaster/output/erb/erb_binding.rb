@@ -21,6 +21,7 @@ module Dockmaster
     end
 
     def render
+      return '' if @renderer.nil?
       @renderer.result(erb_binding)
     end
   end

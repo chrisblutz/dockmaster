@@ -1,4 +1,6 @@
 title: Dockmaster Documentation
-output: doc/
+output: docs/
 exclude:
   - spec/
+  - lib/theme_template/
+theme: default

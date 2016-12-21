@@ -1,7 +1,9 @@
 source 'https://rubygems.org'
 gemspec
 
-gem 'dockmaster-theme-default', git: 'https://github.com/chrisblutz/dockmaster-theme-default.git'
+git 'https://github.com/chrisblutz/dockmaster-theme-defaults.git' do
+  gem 'dockmaster-theme-default'
+end
 
 group :test do
   gem 'codeclimate-test-reporter', require: nil
