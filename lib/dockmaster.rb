@@ -5,7 +5,6 @@ require 'dockmaster/version'
 
 # Dockmaster commands
 require 'dockmaster/cli/command'
-require 'dockmaster/cli/commands/theme_command'
 
 # Dockmaster is a Ruby documentation tool
 # that converts source code documentation

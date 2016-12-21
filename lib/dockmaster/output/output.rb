@@ -30,9 +30,9 @@ module Dockmaster
       store = master_store if store.nil?
       if Dockmaster.debug?
         if store.type == :none
-          puts 'Rendering special page...'
+          puts "Rendering special page... (#{file_path})"
         else
-          puts "Rendering #{store.type} page for #{store.rb_string}..."
+          puts "Rendering #{store.type} page for #{store.rb_string}... (#{file_path})"
         end
       end
       if use_base

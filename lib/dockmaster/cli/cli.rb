@@ -1,5 +1,6 @@
 require 'dockmaster/cli/options'
 
+require 'rbconfig'
 require 'webrick'
 
 module Dockmaster
@@ -46,10 +47,21 @@ module Dockmaster
 
     def serve_docs
       root = File.expand_path(File.join(Dir.pwd, Dockmaster::CONFIG[:output]))
-      server = WEBrick::HTTPServer.new Port: 8000, DocumentRoot: root
+      log_file = 'NUL' if RbConfig::CONFIG['host_os'] =~ /mswin|mingw|cygwin/
+      log_file ||= '/dev/null'
+      server = WEBrick::HTTPServer.new(Port: 8000,
+                                       BindAddress: 'localhost',
+                                       DocumentRoot: root,
+                                       Logger: WEBrick::Log.new(log_file),
+                                       AccessLog: [])
       trap 'INT' do
         server.shutdown
+        puts 'Documentation server shut down.'
       end
+      puts '-----------------'
+      puts ' Serving docs...'
+      puts '-----------------'
+      puts "Server open at '#{server.config[:BindAddress]}:#{server.config[:Port]}'."
       server.start
     end
 
