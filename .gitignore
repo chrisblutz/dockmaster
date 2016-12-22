@@ -3,7 +3,7 @@
 Gemfile.lock
 
 # Dockmaster files
-docs/
+/docs/
 
 # Misc. files
 coverage
