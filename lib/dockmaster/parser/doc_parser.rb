@@ -125,7 +125,8 @@ module Dockmaster
           in_cache = Dockmaster::Store.in_cache?(store, type, child.to_a[1])
 
           sub_store = Dockmaster::Store.from_cache(store, type, child.to_a[1])
-          sub_store.docs = closest_comment(line, comments)
+          doc_str = closest_comment(line, comments)
+          sub_store.docs = Dockmaster::DocProcessor.process(doc_str.strip, @file)
 
           yield if block_given?
 
@@ -160,8 +161,8 @@ module Dockmaster
           end
         end
 
-        docs = closest_comment(line, comments)
-
+        doc_str = closest_comment(line, comments)
+        docs = Dockmaster::DocProcessor.process(doc_str.strip, @file)
         store.method_data.store(name, Dockmaster::Data.new(docs, @file, ast, line))
 
         store
@@ -171,7 +172,8 @@ module Dockmaster
         ast_ary = ast.to_a
         name = ast_ary[1]
 
-        docs = closest_comment(line, comments)
+        doc_str = closest_comment(line, comments)
+        docs = Dockmaster::DocProcessor.process(doc_str.strip, @file)
 
         # TODO: differentiate between constants and others
         store.field_data.store(name, Dockmaster::Data.new(docs, @file, ast, line))

@@ -31,11 +31,15 @@ require 'dockmaster/cli/command'
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+#
+# @author Christopher Lutz
 module Dockmaster
   autoload :CLI, 'dockmaster/cli/cli'
   autoload :Configuration, 'dockmaster/configuration'
   autoload :Data, 'dockmaster/parser/data'
   autoload :DocParser, 'dockmaster/parser/doc_parser'
+  autoload :DocProcessor, 'dockmaster/docs/doc_processor'
+  autoload :Docs, 'dockmaster/docs/docs'
   autoload :External, 'dockmaster/external'
   autoload :Output, 'dockmaster/output/output'
   autoload :Plugin, 'dockmaster/plugin'

@@ -8,7 +8,7 @@ Metrics/BlockLength:
     - 'spec/dockmaster/parser/store_spec.rb'
     - 'spec/dockmaster/plugin_spec.rb'
 Metrics/ClassLength:
-  Max: 150
+  Max: 200
 Metrics/CyclomaticComplexity:
   Max: 10
 Metrics/LineLength:
