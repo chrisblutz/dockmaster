@@ -1,13 +1,15 @@
 module Dockmaster
   # This class represents processed documentation
   class Docs
-    attr_reader :desc, :params, :return, :author
+    attr_reader :description, :fields
 
-    def initialize(desc, params, ret, author)
-      @desc = desc
-      @params = params
-      @return = ret
-      @author = author
+    def initialize(desc, fields)
+      @description = desc
+      @fields = fields
+    end
+
+    def [](field)
+      @fields[field]
     end
   end
 end

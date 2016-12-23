@@ -48,7 +48,8 @@ module Dockmaster
     attr_reader :path
     attr_reader :rb_string
     attr_writer :children
-    attr_writer :docs
+    attr_accessor :docs
+    attr_writer :doc_str
     attr_writer :field_data
     attr_writer :method_data
     attr_writer :type
@@ -77,8 +78,8 @@ module Dockmaster
       @children ||= []
     end
 
-    def docs
-      @docs ||= ''
+    def doc_str
+      @doc_str ||= ''
     end
 
     def field_data
@@ -97,11 +98,47 @@ module Dockmaster
       @type ||= :none
     end
 
+    def parse_see_links
+      out = Dockmaster::Theme.module_output(self) if @type == :module
+      out = Dockmaster::Theme.class_output(self) if @type == :class
+      out ||= '/'
+
+      Dockmaster::DocProcessor.see_links[rb_string] = out
+
+      method_data.each do |method, _|
+        Dockmaster::DocProcessor.see_links["#{@rb_string}.#{method}"] = "#{out}##{method}"
+      end
+
+      field_data.each do |field, _|
+        Dockmaster::DocProcessor.see_links["#{@rb_string}.#{field}"] = "#{out}##{field}"
+      end
+
+      children.each(&:parse_see_links)
+    end
+
+    def parse_docs
+      unless @parent.nil?
+        puts "Processing documentation for #{@rb_string}" if Dockmaster.debug?
+
+        @docs = Dockmaster::DocProcessor.process(doc_str, @rb_string)
+
+        method_data.each do |method, data|
+          data.docs = Dockmaster::DocProcessor.process(data.doc_str, "#{@rb_string}.#{method}")
+        end
+
+        field_data.each do |field, data|
+          data.docs = Dockmaster::DocProcessor.process(data.doc_str, "#{@rb_string}::#{field}")
+        end
+      end
+
+      children.each(&:parse_docs)
+    end
+
     def to_indented_string(level)
       indent = '  ' * level
       str = ''
       str += "#{indent}(#{type}, #{name}"
-      str += ", #{docs.inspect}" unless docs.empty?
+      str += ", has docs? #{!doc_str.empty?}"
       str += ")\n"
       str = append_field_and_method_strings(str, level + 1)
       children.each do |child|
@@ -112,10 +149,6 @@ module Dockmaster
 
     def inspect
       to_indented_string(0)
-    end
-
-    def erb_binding
-      binding
     end
 
     def similar?(other)
@@ -143,7 +176,7 @@ module Dockmaster
     def append_hash_docs(hash_data, str, type, level)
       hash_data.each do |name, data|
         str += "#{'  ' * level}(#{type}, #{name}"
-        str += ", #{data.docs.inspect}" unless data.docs.empty?
+        str += ", has docs? #{!data.doc_str.empty?}"
         str += ")\n"
       end
 
