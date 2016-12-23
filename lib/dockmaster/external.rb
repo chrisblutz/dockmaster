@@ -44,6 +44,14 @@ Cannot find plugin '#{plugin}'.  It may be contained in a gem such as 'dockmaste
         end
       end
 
+      def silent_output
+        old_stdout = $stdout
+        $stdout = StringIO.new
+        yield
+      ensure
+        $stdout = old_stdout
+      end
+
       private
 
       def silent_warnings

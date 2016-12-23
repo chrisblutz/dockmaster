@@ -2,6 +2,7 @@ require 'simplecov'
 SimpleCov.start
 
 require 'dockmaster'
+require 'dockmaster/docs/processor_defaults'
 
 RSpec.configure do |config|
   config.order = :random
@@ -23,6 +24,8 @@ RSpec.configure do |config|
     Dockmaster::CONFIG[:output] = 'rspec/tests/files'
 
     Dockmaster.load_externals
+
+    Dockmaster::ProcessorDefaults.register_internals
   end
 
   config.after(:each) do
