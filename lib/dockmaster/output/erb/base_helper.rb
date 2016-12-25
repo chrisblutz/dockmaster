@@ -2,7 +2,6 @@ module Dockmaster
   # Represents the base helper for
   # ERB bindings
   class BaseHelper
-    autoload :CGI, 'cgi'
     autoload :Unparser, 'unparser'
 
     def initialize(master_store, store)
@@ -11,11 +10,11 @@ module Dockmaster
     end
 
     def method_names
-      @store.method_data.keys
+      Array.new(@store.method_data.keys).sort
     end
 
     def field_names
-      @store.field_data.keys
+      Array.new(@store.field_data.keys).sort
     end
 
     def method_source(name)
@@ -40,29 +39,29 @@ module Dockmaster
       code
     end
 
-    def escape_html(str)
-      CGI.escapeHTML(str)
-    end
-
     def list_all_stores
-      stores = []
+      stores = {} # < TODO:  TURN THIS INTO A HASH
 
       @master_store.children.each do |child|
-        stores += create_store_list(child)
+        stores.merge!(create_store_list(child))
       end
 
-      stores.sort_by(&:rb_string)
+      stores_arr = []
 
-      stores
+      Hash[stores.sort].each do |_, value|
+        stores_arr << value
+      end
+
+      stores_arr
     end
 
     private
 
     def create_store_list(store)
-      stores = [store]
+      stores = { store.rb_string => store }
 
       store.children.each do |child|
-        stores += create_store_list(child)
+        stores.merge!(create_store_list(child))
       end
 
       stores

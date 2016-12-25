@@ -4,5 +4,8 @@ exclude:
   - spec/
   - lib/theme_template/
 theme: default
-plugins:
-  - sitemap
+
+# Theme settings
+site_logo: /logo/dockmaster-logo-horizontal.svg
+source_repo: https://github.com/chrisblutz/dockmaster
+doc_home: Dockmaster

@@ -45,6 +45,23 @@ module Dockmaster
       perform_write(file_path, store)
     end
 
+    def directory
+      Output.docs_dir
+    end
+
+    def create_dir(dir)
+      full_dir = File.join(directory, dir)
+      Dir.mkdir(full_dir) unless File.exist?(full_dir)
+    end
+
+    def copy_file(src, dest)
+      return if src.nil? || dest.nil?
+      src_file = File.join(Dir.pwd, src)
+      dest_dir = File.join(directory, dest)
+      return unless File.exist?(src_file)
+      FileUtils.cp(src_file, dest_dir)
+    end
+
     private
 
     def site_binding(master_store, store, renderer)
@@ -95,18 +112,28 @@ module Dockmaster
       def process(master_store, store)
         renderer = nil
         name = ''
+        use_base = true
         if store.type == :none
           renderer = @index_output
           name = Dockmaster::Theme.index_output(store)
+          if Dockmaster::Theme.respond_to?(:index_use_base_template)
+            use_base = Dockmaster::Theme.index_use_base_template
+          end
         elsif store.type == :module
           renderer = @module_output
           name = Dockmaster::Theme.module_output(store)
+          if Dockmaster::Theme.respond_to?(:module_use_base_template)
+            use_base = Dockmaster::Theme.module_use_base_template
+          end
         elsif store.type == :class
           renderer = @class_output
           name = Dockmaster::Theme.class_output(store)
+          if Dockmaster::Theme.respond_to?(:class_use_base_template)
+            use_base = Dockmaster::Theme.class_use_base_template
+          end
         end
 
-        renderer.render(name, master_store, store, true)
+        renderer.render(name, master_store, store, use_base)
         return if renderer.nil?
         store.children.each do |child|
           process(master_store, child)

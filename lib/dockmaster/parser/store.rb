@@ -106,11 +106,11 @@ module Dockmaster
       Dockmaster::DocProcessor.see_links[rb_string] = out
 
       method_data.each do |method, _|
-        Dockmaster::DocProcessor.see_links["#{@rb_string}.#{method}"] = "#{out}##{method}"
+        Dockmaster::DocProcessor.see_links["#{@rb_string}.#{method}"] = "#{out}#method_#{method}"
       end
 
       field_data.each do |field, _|
-        Dockmaster::DocProcessor.see_links["#{@rb_string}.#{field}"] = "#{out}##{field}"
+        Dockmaster::DocProcessor.see_links["#{@rb_string}.#{field}"] = "#{out}#field_#{field}"
       end
 
       children.each(&:parse_see_links)

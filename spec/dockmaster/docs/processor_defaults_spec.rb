@@ -10,6 +10,15 @@ RSpec.describe Dockmaster::ProcessorDefaults do
     end
   end
 
+  context 'with @quote annotation' do
+    it 'formats the text inside of a <blockquote> tag' do
+      src = '{@quote test}'
+      result = Dockmaster::DocProcessor.process_internal_documentation(src)
+
+      expect(result).to eq('<blockquote>test</blockquote>')
+    end
+  end
+
   context 'with @link annotation' do
     it 'formats the text inside of an <a> tag' do
       src = '{@link example.com text}'

@@ -18,6 +18,11 @@ module Dockmaster
         DocProcessor.register_internal_annotation_handler(:code) do |text|
           "<code>#{DocProcessor.process_internal_documentation(text)}</code>"
         end
+
+        # quote annotation
+        DocProcessor.register_internal_annotation_handler(:quote) do |text|
+          "<blockquote>#{DocProcessor.process_internal_documentation(text)}</blockquote>"
+        end
       end
 
       def register_link_handlers
