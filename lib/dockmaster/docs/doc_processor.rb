@@ -96,9 +96,11 @@ module Dockmaster
 
         text.each_char do |char|
           if char == '{'
+            intern += '{' if level > 0
             level += 1
           elsif char == '}'
             if level > 1
+              intern += '}'
               level -= 1
             elsif level == 1
               result = process_internal_annotation(intern)

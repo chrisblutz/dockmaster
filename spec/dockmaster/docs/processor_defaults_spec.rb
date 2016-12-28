@@ -51,6 +51,26 @@ RSpec.describe Dockmaster::ProcessorDefaults do
     end
   end
 
+  context 'with @ext annotation' do
+    context 'with .html input' do
+      it 'imports the HTML correctly' do
+        src = '# {@ext spec/files/doc-ext/incl-test.html}'
+        result = Dockmaster::DocProcessor.process(src, '<none>')
+
+        expect(result.description).to eq('This is a <code>test</code>.')
+      end
+    end
+
+    context 'with .txt input' do
+      it 'imports the text correctly, with internal docs parsed' do
+        src = '# {@ext spec/files/doc-ext/incl-test.txt}'
+        result = Dockmaster::DocProcessor.process(src, '<none>')
+
+        expect(result.description).to eq('This is a <code>test</code>.')
+      end
+    end
+  end
+
   context 'with @param annotation' do
     it 'processes the param name and description' do
       src = '# @param test desc'

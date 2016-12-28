@@ -1,14 +1,25 @@
 require 'dockmaster/docs/doc_processor'
+require 'dockmaster/docs/ext_loader_registry'
+
+require 'dockmaster/docs/external_loaders/html_loader'
+require 'dockmaster/docs/external_loaders/txt_loader'
 
 module Dockmaster
   # This class handles default handlers, etc. for the documentation processor
   class ProcessorDefaults
     class << self
+      attr_reader :loaded
+
       def register_internals
+        return if @loaded
         register_basic_handlers
 
         register_code_handlers
         register_link_handlers
+
+        register_external_loaders
+
+        @loaded = true
       end
 
       private
@@ -75,6 +86,17 @@ module Dockmaster
         DocProcessor.register_annotation_handler(:api) do |text|
           sym = text.to_sym
           DocProcessor.set(:api, sym)
+        end
+      end
+
+      def register_external_loaders
+        ExtLoaderRegistry.register(HTMLLoader)
+        ExtLoaderRegistry.register(TXTLoader)
+
+        # ext annotation
+        DocProcessor.register_internal_annotation_handler(:ext) do |text|
+          result = ExtLoaderRegistry.load(File.join(Dir.pwd, text))
+          result
         end
       end
     end
