@@ -50,8 +50,7 @@ module Dockmaster
     attr_writer :children
     attr_accessor :docs
     attr_writer :doc_str
-    attr_writer :field_data
-    attr_writer :method_data
+    attr_writer :data
     attr_writer :type
 
     def initialize(parent, type, name)
@@ -82,12 +81,12 @@ module Dockmaster
       @doc_str ||= ''
     end
 
-    def field_data
-      @field_data ||= {}
+    def data
+      @data ||= {}
     end
 
-    def method_data
-      @method_data ||= {}
+    def data_type(type)
+      data[type] ||= {}
     end
 
     def name
@@ -105,12 +104,12 @@ module Dockmaster
 
       Dockmaster::DocProcessor.see_links[rb_string] = out
 
-      method_data.each do |method, _|
-        Dockmaster::DocProcessor.see_links["#{@rb_string}.#{method}"] = "#{out}#method_#{method}"
-      end
-
-      field_data.each do |field, _|
-        Dockmaster::DocProcessor.see_links["#{@rb_string}.#{field}"] = "#{out}#field_#{field}"
+      data.each do |type, hash|
+        hash.each do |name, _|
+          link = "#{out}##{type}_#{name}"
+          separator = ParserRegistry.separators[type] || '.'
+          Dockmaster::DocProcessor.see_links["#{@rb_string}#{separator}#{name}"] = link
+        end
       end
 
       children.each(&:parse_see_links)
@@ -122,12 +121,11 @@ module Dockmaster
 
         @docs = Dockmaster::DocProcessor.process(doc_str, @rb_string)
 
-        method_data.each do |method, data|
-          data.docs = Dockmaster::DocProcessor.process(data.doc_str, "#{@rb_string}.#{method}")
-        end
-
-        field_data.each do |field, data|
-          data.docs = Dockmaster::DocProcessor.process(data.doc_str, "#{@rb_string}::#{field}")
+        data.each do |type, hash|
+          hash.each do |name, data|
+            separator = ParserRegistry.separators[type] || '.'
+            data.docs = Dockmaster::DocProcessor.process(data.doc_str, "#{rb_string}#{separator}#{name}")
+          end
         end
       end
 
@@ -140,7 +138,7 @@ module Dockmaster
       str += "#{indent}(#{type}, #{name}"
       str += ", has docs? #{!doc_str.empty?}"
       str += ")\n"
-      str = append_field_and_method_strings(str, level + 1)
+      str = append_internal_strings(str, level + 1)
       children.each do |child|
         str += child.to_indented_string(level + 1)
       end
@@ -166,9 +164,10 @@ module Dockmaster
 
     private
 
-    def append_field_and_method_strings(str, level)
-      str = append_hash_docs(field_data, str, :field, level) unless field_data.empty?
-      str = append_hash_docs(method_data, str, :method, level) unless method_data.empty?
+    def append_internal_strings(str, level)
+      data.each do |type, hash|
+        str = append_hash_docs(hash, str, type, level) unless hash.empty?
+      end
 
       str
     end
@@ -176,6 +175,8 @@ module Dockmaster
     def append_hash_docs(hash_data, str, type, level)
       hash_data.each do |name, data|
         str += "#{'  ' * level}(#{type}, #{name}"
+        str += ', private' if data.private
+        str += ', read-only' if data.readonly?
         str += ", has docs? #{!data.doc_str.empty?}"
         str += ")\n"
       end

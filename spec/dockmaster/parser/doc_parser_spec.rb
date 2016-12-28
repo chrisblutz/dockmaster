@@ -79,32 +79,46 @@ end
   describe '.begin' do
     it 'finds all source files and parses them into a Store with correct documentation' do
       Dir.chdir('spec/files/parser_test') do
+        Dockmaster.include_private
+
         store = Dockmaster::DocParser.begin
 
         expect(store.children.length).to eq(1)
         mod = store.children[0]
         expect(mod.rb_string).to eq('TestFiles')
+        expect(mod.data_type(:static_method)).to have_key(:mod_method)
         expect(mod.children.length).to eq(2)
         class1 = mod.children[0]
         class2 = mod.children[1]
 
         expect(class1.rb_string).to eq('TestFiles::TestFile1')
         expect(class1.docs.description).to eq('Test documentation for TestFile1')
-        expect(class1.field_data).to have_key(:TEST1)
-        expect(class1.field_data[:TEST1].docs.description).to eq('A field (1)')
-        expect(class1.method_data).to have_key(:test_method_1)
-        expect(class1.method_data[:test_method_1].docs.description).to eq('A method (1)')
-        expect(class1.method_data[:test_method_1].docs[:params]).to eq('test' => 'desc(1)')
-        expect(class1.method_data[:test_method_1].docs[:return]).to eq('test(1)')
+        expect(class1.data_type(:constant)).to have_key(:TEST1)
+        expect(class1.data_type(:constant)[:TEST1].docs.description).to eq('A field (1)')
+        expect(class1.data_type(:instance_method)).to have_key(:test_method_1)
+        expect(class1.data_type(:instance_method)[:test_method_1].docs.description).to eq('A method (1)')
+        expect(class1.data_type(:instance_method)[:test_method_1].docs[:params]).to eq('test' => 'desc(1)')
+        expect(class1.data_type(:instance_method)[:test_method_1].docs[:return]).to eq('test(1)')
+        expect(class1.data_type(:static_method)).to have_key(:stest_method_1)
+        expect(class1.data_type(:static_method)[:stest_method_1].docs.description).to eq('A static method (1)')
+        expect(class1.data_type(:static_method)).to have_key(:ptest_method_1)
+        expect(class1.data_type(:static_method)[:ptest_method_1].docs.description).to eq('A private static method (1)')
+        expect(class1.data_type(:static_method)[:ptest_method_1].private).to eq(true)
+        expect(class1.data_type(:instance_field)).to have_key(:test_field)
+        expect(class1.data_type(:instance_field)[:test_field].docs.description).to eq('A non-constant field (1)')
+        expect(class1.data_type(:static_field)).to have_key(:stest_field)
+        expect(class1.data_type(:static_field)[:stest_field].docs.description).to eq('A static non-constant field (1)')
 
         expect(class2.rb_string).to eq('TestFiles::TestFile2')
         expect(class2.docs.description).to eq('Test documentation for TestFile2')
-        expect(class2.field_data).to have_key(:TEST2)
-        expect(class2.field_data[:TEST2].docs.description).to eq('A field (2)')
-        expect(class2.method_data).to have_key(:test_method_2)
-        expect(class2.method_data[:test_method_2].docs.description).to eq('A method (2)')
-        expect(class2.method_data[:test_method_2].docs[:params]).to eq('test' => 'desc(2)')
-        expect(class2.method_data[:test_method_2].docs[:return]).to eq('test(2)')
+        expect(class2.data_type(:constant)).to have_key(:TEST2)
+        expect(class2.data_type(:constant)[:TEST2].docs.description).to eq('A field (2)')
+        expect(class2.data_type(:instance_method)).to have_key(:test_method_2)
+        expect(class2.data_type(:instance_method)[:test_method_2].docs.description).to eq('A method (2)')
+        expect(class2.data_type(:instance_method)[:test_method_2].docs[:params]).to eq('test' => 'desc(2)')
+        expect(class2.data_type(:instance_method)[:test_method_2].docs[:return]).to eq('test(2)')
+        expect(class2.data_type(:static_method)).to have_key(:stest_method_2)
+        expect(class2.data_type(:static_method)[:stest_method_2].docs.description).to eq('A static method (2)')
       end
     end
   end

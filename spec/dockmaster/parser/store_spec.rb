@@ -36,11 +36,13 @@ module Test
 
   # More documentation
   class TestClass
+    attr_reader :test_field
+
     def method
     end
 
     # Method with docs
-    def method_w_docs
+    def self.method_w_docs
     end
   end
 end
@@ -52,11 +54,12 @@ end
       exp = <<-END
 (none, , has docs? false)
   (module, Test, has docs? true)
-    (field, TEST, has docs? false)
-    (field, TEST_W_DOCS, has docs? true)
+    (constant, TEST, has docs? false)
+    (constant, TEST_W_DOCS, has docs? true)
     (class, TestClass, has docs? true)
-      (method, method, has docs? false)
-      (method, method_w_docs, has docs? true)
+      (instance_field, test_field, read-only, has docs? false)
+      (instance_method, method, has docs? false)
+      (static_method, method_w_docs, has docs? true)
       END
 
       expect(store.inspect).to eq(exp)

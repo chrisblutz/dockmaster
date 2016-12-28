@@ -74,6 +74,14 @@ module Dockmaster
     @no_build ||= false
   end
 
+  def include_private
+    @inc_priv = true
+  end
+
+  def include_private?
+    @inc_priv ||= false
+  end
+
   def load_externals
     Dockmaster::External.load_theme
     Dockmaster::External.load_plugins

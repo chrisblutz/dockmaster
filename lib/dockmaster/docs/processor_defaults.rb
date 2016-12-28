@@ -70,6 +70,12 @@ module Dockmaster
           processed = DocProcessor.process_internal_documentation(text)
           DocProcessor.set(:author, processed)
         end
+
+        # api annotation
+        DocProcessor.register_annotation_handler(:api) do |text|
+          sym = text.to_sym
+          DocProcessor.set(:api, sym)
+        end
       end
     end
   end
