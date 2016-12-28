@@ -1,11 +1,13 @@
 require 'dockmaster/output/erb/base_helper'
 
 RSpec.describe Dockmaster::BaseHelper do
-  describe '#method_source' do
+  describe '#source' do
     it 'retrieves the source for the method' do
       source_str = <<-END
 # Test documentation
 module TestModule
+  module_function
+
   # Test documentation
   def test_method
     test = 'test'
@@ -24,10 +26,10 @@ end
 
       helper = Dockmaster::BaseHelper.new(store, mod_store)
 
-      unparsed_source = helper.method_source(:test_method)
+      unparsed_source = helper.source(:static_method, :test_method)
 
       expected = <<-END.rstrip
-# File '<none>', line 4
+# File '<none>', line 6
 
 def test_method
   test = "test"
@@ -41,35 +43,30 @@ end
     end
   end
 
-  describe '#field_source' do
-    it 'retrieves the source for the field' do
+  describe '#list_all_stores with multiple nested modules' do
+    it 'correctly lists all stores' do
       source_str = <<-END
-# Test documentation
-module TestModule
-  # Test documentation
-  TEST_FIELD = 10.0
+module Nest0
+  module Nest1
+    module Nest2
+    end
+  end
 end
       END
       store = Dockmaster::Store.new(nil, :none, '')
       store = Dockmaster::DocParser.parse_string(source_str, store)
 
-      expect(store.children).not_to be_empty
-
       mod_store = store.children[0]
 
-      expect(mod_store.type).to eq(:module)
-
       helper = Dockmaster::BaseHelper.new(store, mod_store)
+      store_list = helper.list_all_stores
 
-      unparsed_source = helper.field_source(:TEST_FIELD)
-
-      expected = <<-END.rstrip
-# File '<none>', line 4
-
-TEST_FIELD = 10.0
-      END
-
-      expect(unparsed_source).to eq(expected)
+      nest0 = store_list[0]
+      expect(nest0.name).to eq(:Nest0)
+      nest1 = store_list[1]
+      expect(nest1.name).to eq(:Nest1)
+      nest2 = store_list[2]
+      expect(nest2.name).to eq(:Nest2)
     end
   end
 end

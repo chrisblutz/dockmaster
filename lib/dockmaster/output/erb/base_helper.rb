@@ -9,28 +9,14 @@ module Dockmaster
       @store = store
     end
 
-    def method_names
-      Array.new(@store.method_data.keys).sort
+    def names(type)
+      Array.new(@store.data_type(type).keys).sort
     end
 
-    def field_names
-      Array.new(@store.field_data.keys).sort
-    end
-
-    def method_source(name)
-      if @store.method_data.key?(name)
-        data = @store.method_data[name]
-        return data_source(data)
-      end
-      ''
-    end
-
-    def field_source(name)
-      if @store.field_data.key?(name)
-        data = @store.field_data[name]
-        return data_source(data)
-      end
-      ''
+    def source(type, name)
+      data = @store.data_type(type)[name]
+      return '' if data.nil?
+      data_source(data)
     end
 
     def data_source(data)

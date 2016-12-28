@@ -25,6 +25,7 @@ RSpec.configure do |config|
 
     Dockmaster.load_externals
 
+    Dockmaster::DocParser.register_default_parsers
     Dockmaster::ProcessorDefaults.register_internals
   end
 

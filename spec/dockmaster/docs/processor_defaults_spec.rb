@@ -77,4 +77,13 @@ RSpec.describe Dockmaster::ProcessorDefaults do
       expect(result[:return]).to eq('test')
     end
   end
+
+  context 'with @api annotation' do
+    it 'saves the correct api access level' do
+      src = '# @api private'
+      result = Dockmaster::DocProcessor.process(src, '<none>')
+
+      expect(result[:api]).to eq(:private)
+    end
+  end
 end

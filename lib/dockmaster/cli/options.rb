@@ -11,6 +11,7 @@ module Dockmaster
         Dockmaster.debug if options.key?(:debug) || short_options.key?(:d)
         Dockmaster.serve_at_end if options[:serve] || short_options.key?(:s)
         Dockmaster.no_build if options['no-build'.to_sym] || short_options.key?(:n)
+        Dockmaster.include_private if options['include-private'.to_sym] || short_options.key?(:p)
         puts "Dockmaster v#{Dockmaster::VERSION}" if options[:version] || short_options.key?(:v)
 
         return unless options[:help]

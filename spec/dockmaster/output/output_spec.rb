@@ -17,20 +17,29 @@ RSpec.describe Dockmaster::Output do
       end
     end
 
-    context 'with one module' do
-      it 'creates an \'index.html\' and module files' do
-        store = Dockmaster::DocParser.parse_string('module Test; end', Dockmaster::Store.new(nil, :none, ''))
+    context 'with one module and one class' do
+      it 'creates an \'index.html\' and module/class files' do
+        src = <<-END
+module Test
+  class TestClass
+  end
+end
+        END
+        store = Dockmaster::DocParser.parse_string(src, Dockmaster::Store.new(nil, :none, ''))
 
         store.parse_see_links
         store.parse_docs
 
         Dockmaster::Output.start_processing(store)
 
-        entries = Dir["#{Dockmaster::CONFIG[:output]}/*.html"]
+        entries = Dir["#{Dockmaster::CONFIG[:output]}/**/*.html"]
         entries.delete('.')
         entries.delete('..')
 
-        expect(entries).to eq(["#{Dockmaster::CONFIG[:output]}/index.html", "#{Dockmaster::CONFIG[:output]}/Test.html"])
+        output = Dockmaster::CONFIG[:output]
+        ary = ["#{output}/index.html", "#{output}/Test/TestClass.html", "#{output}/Test.html"]
+
+        expect(entries).to eq(ary)
       end
     end
   end

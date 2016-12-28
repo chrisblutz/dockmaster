@@ -11,5 +11,8 @@ module TestFiles
     # @param test desc(2)
     # @return test(2)
     def test_method_2(test); end
+
+    # A static method (2)
+    def self.stest_method_2(_test); end
   end
 end

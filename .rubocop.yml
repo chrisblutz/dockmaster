@@ -4,6 +4,7 @@ Metrics/AbcSize:
 Metrics/BlockLength:
   Exclude:
     - 'spec/dockmaster/docs/processor_defaults_spec.rb'
+    - 'spec/dockmaster/output/output_spec.rb'
     - 'spec/dockmaster/output/erb/base_helper_spec.rb'
     - 'spec/dockmaster/parser/doc_parser_spec.rb'
     - 'spec/dockmaster/parser/store_spec.rb'
@@ -11,13 +12,15 @@ Metrics/BlockLength:
 Metrics/ClassLength:
   Max: 200
 Metrics/CyclomaticComplexity:
-  Max: 10
+  Enabled: false
 Metrics/LineLength:
   Max: 120
 Metrics/MethodLength:
   CountComments: false
   Max: 30
+Metrics/ParameterLists:
+  Enabled: false
 Metrics/PerceivedComplexity:
-  Max: 10
+  Enabled: false
 EndOfLine:
   Enabled: false
