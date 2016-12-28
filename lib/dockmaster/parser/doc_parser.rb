@@ -5,9 +5,8 @@ require 'dockmaster/parser/ast_parsers/class_module_parser'
 require 'dockmaster/parser/ast_parsers/constant_parser'
 require 'dockmaster/parser/ast_parsers/field_parser'
 require 'dockmaster/parser/ast_parsers/method_parser'
-require 'dockmaster/parser/ast_parsers/mod_func_static_parser'
-require 'dockmaster/parser/ast_parsers/private_parser'
 require 'dockmaster/parser/ast_parsers/sclass_static_parser'
+require 'dockmaster/parser/ast_parsers/single_line_mod_parser'
 
 module Dockmaster
   # Parses source code and
@@ -127,9 +126,8 @@ module Dockmaster
         ParserRegistry.register(ConstantParser)
         ParserRegistry.register(FieldParser)
         ParserRegistry.register(MethodParser)
-        ParserRegistry.register(ModFuncStaticParser)
-        ParserRegistry.register(PrivateParser)
         ParserRegistry.register(SClassStaticParser)
+        ParserRegistry.register(SingleLineModParser)
 
         ParserRegistry.register_separator(:instance_method, '#')
         ParserRegistry.register_separator(:static_method, '.')
