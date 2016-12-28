@@ -13,7 +13,7 @@ RSpec.describe Dockmaster::Output do
         entries.delete('.')
         entries.delete('..')
 
-        expect(entries).to eq(["#{Dockmaster::CONFIG[:output]}/index.html"])
+        expect(entries).to include("#{Dockmaster::CONFIG[:output]}/index.html")
       end
     end
 
@@ -37,9 +37,10 @@ end
         entries.delete('..')
 
         output = Dockmaster::CONFIG[:output]
-        ary = ["#{output}/index.html", "#{output}/Test/TestClass.html", "#{output}/Test.html"]
 
-        expect(entries).to eq(ary)
+        expect(entries).to include("#{output}/index.html")
+        expect(entries).to include("#{output}/Test/TestClass.html")
+        expect(entries).to include("#{output}/Test.html")
       end
     end
   end
