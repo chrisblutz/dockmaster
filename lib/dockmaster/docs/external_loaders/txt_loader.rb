@@ -9,7 +9,9 @@ module Dockmaster
       end
 
       def load_file(file)
-        DocProcessor.process_internal_documentation(IO.read(file))
+        lines = IO.read(file).split("\n")
+        lines = DocProcessor.process_internal_documentation(lines)
+        DocProcessor.format_lines(lines)
       end
     end
   end

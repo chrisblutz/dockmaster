@@ -1,5 +1,5 @@
 module Dockmaster
-  # Finds source files and sorts out the ones excluded by the .dockmaster.yml file
+  # Finds source files and sorts out the ones excluded by the {@code .dockmaster.yml} file
   module Source
     module_function
 

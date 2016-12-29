@@ -1,12 +1,66 @@
 require 'dockmaster/docs/processor_defaults'
 
 RSpec.describe Dockmaster::ProcessorDefaults do
+  context 'with nested internal annotations' do
+    it 'formats the text correctly' do
+      src = '{@code {@code test}}'
+      result = Dockmaster::DocProcessor.process_internal_documentation(src)
+
+      expect(result).to eq(['<code><code>test</code></code>'])
+    end
+  end
+
+  context 'with a multi-line internal annotation' do
+    it 'formats the text correctly' do
+      src = ['{@code code', 'test}']
+      result = Dockmaster::DocProcessor.process_internal_documentation(src)
+
+      expect(result).to eq(['<code>code', 'test</code>'])
+    end
+  end
+
   context 'with @code annotation' do
     it 'formats the text inside of a <code> tag' do
       src = '{@code test}'
       result = Dockmaster::DocProcessor.process_internal_documentation(src)
 
-      expect(result).to eq('<code>test</code>')
+      expect(result).to eq(['<code>test</code>'])
+    end
+  end
+
+  context 'with @pre annotation' do
+    context 'without a CSS class defined' do
+      it 'formats the text inside of <pre><code> tags' do
+        src = <<-END
+# {@pre
+# module Test
+#   class TestClass
+#   end
+# end
+# }
+        END
+        result = Dockmaster::DocProcessor.process(src, '<none>')
+
+        expected = '<pre><code>module Test<br>  class TestClass<br>  end<br>end</code></pre>'
+        expect(result.description).to eq(expected)
+      end
+    end
+
+    context 'with a CSS class defined' do
+      it 'formats the text inside of a <pre> tag and a <code> tag with a class' do
+        src = <<-END
+# {@pre @lang-ruby
+# module Test
+#   class TestClass
+#   end
+# end
+# }
+          END
+        result = Dockmaster::DocProcessor.process(src, '<none>')
+
+        expected = '<pre><code class="lang-ruby">module Test<br>  class TestClass<br>  end<br>end</code></pre>'
+        expect(result.description).to eq(expected)
+      end
     end
   end
 
@@ -15,7 +69,7 @@ RSpec.describe Dockmaster::ProcessorDefaults do
       src = '{@quote test}'
       result = Dockmaster::DocProcessor.process_internal_documentation(src)
 
-      expect(result).to eq('<blockquote>test</blockquote>')
+      expect(result).to eq(['<blockquote>test</blockquote>'])
     end
   end
 
@@ -24,7 +78,7 @@ RSpec.describe Dockmaster::ProcessorDefaults do
       src = '{@link example.com text}'
       result = Dockmaster::DocProcessor.process_internal_documentation(src)
 
-      expect(result).to eq('<a href="example.com">text</a>')
+      expect(result).to eq(['<a href="example.com">text</a>'])
     end
   end
 
@@ -34,7 +88,7 @@ RSpec.describe Dockmaster::ProcessorDefaults do
       Dockmaster::DocProcessor.see_links['Test::test'] = 'test'
       result = Dockmaster::DocProcessor.process_internal_documentation(src)
 
-      expect(result).to eq('<em>(see <a href="test">Test::test</a>)</em>')
+      expect(result).to eq(['<em>(see <a href="test">Test::test</a>)</em>'])
     end
 
     context 'with an incorrect reference' do
@@ -46,7 +100,7 @@ RSpec.describe Dockmaster::ProcessorDefaults do
           result = Dockmaster::DocProcessor.process_internal_documentation(src)
         end
 
-        expect(result).to eq('<em>(see <a href="#">TestFail::test</a>)</em>')
+        expect(result).to eq(['<em>(see <a href="#">TestFail::test</a>)</em>'])
       end
     end
   end

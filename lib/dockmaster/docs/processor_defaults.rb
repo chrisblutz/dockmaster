@@ -26,27 +26,40 @@ module Dockmaster
 
       def register_code_handlers
         # code annotation
-        DocProcessor.register_internal_annotation_handler(:code) do |text|
-          "<code>#{DocProcessor.process_internal_documentation(text)}</code>"
+        DocProcessor.register_internal_wrap_annotation(:code, '<code>', '</code>')
+
+        # pre annotation
+        DocProcessor.register_internal_annotation_handler(:pre) do |lines|
+          str = '<pre><code'
+          if lines[0].start_with?('@')
+            css_class = lines[0].split(/\s/i)[0][1..-1]
+            lines[0] = lines[0][css_class.length + 1..-1].strip
+            str += " class=\"#{css_class}\""
+          end
+          str += '>'
+          result = DocProcessor.process_internal_documentation(lines)
+          str += DocProcessor.join(result, "\n")
+          str += '</code></pre>'
+          [str]
         end
 
         # quote annotation
-        DocProcessor.register_internal_annotation_handler(:quote) do |text|
-          "<blockquote>#{DocProcessor.process_internal_documentation(text)}</blockquote>"
-        end
+        DocProcessor.register_internal_wrap_annotation(:quote, '<blockquote>', '</blockquote>')
       end
 
       def register_link_handlers
         # link annotation
-        DocProcessor.register_internal_annotation_handler(:link) do |text|
-          link = text.split(' ')[0]
-          text = text[link.length..-1].strip
-          text = link if text.empty?
-          "<a href=\"#{link}\">#{DocProcessor.process_internal_documentation(text)}</a>"
+        DocProcessor.register_internal_annotation_handler(:link) do |lines|
+          link = lines[0].split(' ')[0]
+          lines[0] = lines[0][link.length..-1].strip
+          lines[0] = link if DocProcessor.join(lines).strip.empty?
+          result = DocProcessor.process_internal_documentation(lines)
+          DocProcessor.wrap(result, "<a href=\"#{link}\">", '</a>')
         end
 
         # see annotation
-        DocProcessor.register_internal_annotation_handler(:see) do |text|
+        DocProcessor.register_internal_annotation_handler(:see) do |lines|
+          text = DocProcessor.join(lines)
           see_link = DocProcessor.see_links[text]
           link = ''
           if see_link.nil?
@@ -56,7 +69,7 @@ module Dockmaster
             link = see_link
           end
 
-          "<em>(see <a href=\"#{link}\">#{text}</a>)</em>"
+          ["<em>(see <a href=\"#{link}\">#{text}</a>)</em>"]
         end
       end
 
@@ -66,21 +79,16 @@ module Dockmaster
           param = text.split(' ')[0]
           desc = text[param.length..-1].strip
           desc = DocProcessor.process_internal_documentation(desc)
+          desc = DocProcessor.join(desc)
 
           DocProcessor.retrieve_with_default(:params, {})[param] = desc
         end
 
         # return annotation
-        DocProcessor.register_annotation_handler(:return) do |text|
-          processed = DocProcessor.process_internal_documentation(text)
-          DocProcessor.set(:return, processed)
-        end
+        DocProcessor.register_direct_annotation(:return)
 
         # author annotation
-        DocProcessor.register_annotation_handler(:author) do |text|
-          processed = DocProcessor.process_internal_documentation(text)
-          DocProcessor.set(:author, processed)
-        end
+        DocProcessor.register_direct_annotation(:author)
 
         # api annotation
         DocProcessor.register_annotation_handler(:api) do |text|
@@ -96,7 +104,7 @@ module Dockmaster
         # ext annotation
         DocProcessor.register_internal_annotation_handler(:ext) do |text|
           result = ExtLoaderRegistry.load(File.join(Dir.pwd, text))
-          result
+          [result]
         end
       end
     end
