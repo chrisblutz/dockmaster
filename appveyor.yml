@@ -16,8 +16,8 @@ test_script:
   - ruby -v
   - gem -v
   - bundle -v
-  - bundle exec rspec
-  - bundle exec rubocop
+  - bundle exec rake --version
+  - bundle exec rake
 
 cache:
   - 'vendor\bundle'

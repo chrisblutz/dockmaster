@@ -21,4 +21,6 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'cogwheels', '~> 0.2'
   s.add_runtime_dependency 'parser', '~> 2.3'
   s.add_runtime_dependency 'unparser', '~> 0.2.5'
+
+  s.add_development_dependency 'rake', '~> 10.4.2'
 end
