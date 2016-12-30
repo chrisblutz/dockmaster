@@ -1,5 +1,6 @@
 AllCops:
   Exclude:
+    - 'vendor/**/*'
     - 'Rakefile'
 Metrics/AbcSize:
   Enabled: False
