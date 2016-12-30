@@ -17,7 +17,8 @@ module Dockmaster
         theme ||= 'default'
         theme = "dockmaster/theme/#{theme}"
         begin
-          puts "Loading theme '#{Dockmaster::CONFIG[:theme]}', using path '#{theme}'..." if Dockmaster.debug?
+          str = "Loading theme '#{Dockmaster::CONFIG[:theme]}', using path '#{theme}'..."
+          Dockmaster::CLI.debug str
           require(theme)
         rescue LoadError
           error = <<-END
@@ -33,7 +34,8 @@ Cannot find theme '#{Dockmaster::CONFIG[:theme]}'.  It may be contained in a gem
         plugins.each do |plugin|
           plugin_full = "dockmaster/#{plugin}"
           begin
-            puts "Loading plugin '#{plugin}', using path '#{plugin_full}'..." if Dockmaster.debug?
+            str = "Loading plugin '#{plugin}', using path '#{plugin_full}'..."
+            Dockmaster::CLI.debug str
             require(plugin_full)
           rescue LoadError
             error = <<-END

@@ -28,11 +28,9 @@ module Dockmaster
         end
       end
 
-      if Dockmaster.debug?
-        puts 'Excluding files:'
-        excluded.each do |file|
-          puts " - #{file.sub(Dir.pwd, '')}"
-        end
+      Dockmaster::CLI.debug 'Excluding files:'
+      excluded.each do |file|
+        Dockmaster::CLI.debug " - #{file.sub(Dir.pwd, '')}"
       end
 
       included

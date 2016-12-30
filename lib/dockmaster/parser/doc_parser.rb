@@ -23,7 +23,7 @@ module Dockmaster
 
         store = Dockmaster::Store.new(nil, :none, '')
         included.each do |file|
-          puts "Parsing #{file.sub(Dir.pwd, '')}..." if Dockmaster.debug?
+          Dockmaster::CLI.debug "Parsing #{file.sub(Dir.pwd, '')}..."
           store = parse_file(file, store, false)
         end
 

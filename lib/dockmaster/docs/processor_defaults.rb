@@ -63,7 +63,7 @@ module Dockmaster
           see_link = DocProcessor.see_links[text]
           link = ''
           if see_link.nil?
-            puts "Unrecognized reference to #{text} found in '#{@file}'"
+            Dockmaster::CLI.output "Unrecognized reference to #{text} found in '#{@file}'"
             link = '#'
           else
             link = see_link

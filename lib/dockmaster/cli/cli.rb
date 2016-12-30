@@ -1,5 +1,6 @@
 require 'dockmaster/cli/options'
 
+require 'rainbow'
 require 'rbconfig'
 require 'webrick'
 
@@ -42,7 +43,10 @@ module Dockmaster
     def build_docs
       store = Dockmaster::DocParser.begin
       Dockmaster::Output.start_processing(store)
-      puts 'Documentation built successfully!'
+      CLI.end_bar
+      files_str = Rainbow("#{Dockmaster::Output.generated} files").yellow
+      CLI.output "Documentation built, #{files_str} files generated"
+      CLI.output "Generated site can be found in: #{Dockmaster::Output.docs_dir}"
     end
 
     def serve_docs
@@ -56,12 +60,12 @@ module Dockmaster
                                        AccessLog: [])
       trap 'INT' do
         server.shutdown
-        puts 'Documentation server shut down.'
+        CLI.output 'Documentation server shut down.'
       end
-      puts '-----------------'
-      puts ' Serving docs...'
-      puts '-----------------'
-      puts "Server open at '#{server.config[:BindAddress]}:#{server.config[:Port]}'."
+      CLI.output '-----------------'
+      CLI.output ' Serving docs...'
+      CLI.output '-----------------'
+      CLI.output "Server open at '#{server.config[:BindAddress]}:#{server.config[:Port]}'."
       server.start
     end
 
@@ -99,6 +103,24 @@ module Dockmaster
         @short_current = false
       end
       @current_arg = option_sym
+    end
+
+    class << self
+      def increment_progress
+        print Rainbow('.').green unless Dockmaster.debug? || Dockmaster.no_output?
+      end
+
+      def end_bar
+        puts '' unless Dockmaster.debug? || Dockmaster.no_output?
+      end
+
+      def output(message)
+        puts message unless Dockmaster.no_output?
+      end
+
+      def debug(message)
+        puts message unless !Dockmaster.debug? || Dockmaster.no_output?
+      end
     end
   end
 end

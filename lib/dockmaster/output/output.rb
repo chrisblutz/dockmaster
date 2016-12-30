@@ -28,12 +28,11 @@ module Dockmaster
     def render(file_path, master_store, store = nil, use_base = true)
       return if @erb.nil?
       store = master_store if store.nil?
-      if Dockmaster.debug?
-        if store.type == :none
-          puts "Rendering special page... (#{file_path})"
-        else
-          puts "Rendering #{store.type} page for #{store.rb_string}... (#{file_path})"
-        end
+      if store.type == :none
+        Dockmaster::CLI.debug "Rendering special page... (#{file_path})"
+      else
+        str = "Rendering #{store.type} page for #{store.rb_string}... (#{file_path})"
+        Dockmaster::CLI.debug str
       end
       if use_base
         binding_obj = site_binding(master_store, store, @erb)
@@ -43,6 +42,8 @@ module Dockmaster
         @output_str = @erb.result(binding_obj)
       end
       perform_write(file_path, store)
+
+      Dockmaster::CLI.increment_progress
     end
 
     def directory
@@ -81,9 +82,16 @@ module Dockmaster
     def write_file(filename, output)
       Dir.mkdir(File.dirname(filename)) unless File.exist?(File.dirname(filename))
       File.open(filename, 'w') { |f| f.write(output) }
+      Output.generated += 1
     end
 
     class << self
+      attr_writer :generated
+
+      def generated
+        @generated ||= 0
+      end
+
       def start_processing(store)
         load_from_files
 

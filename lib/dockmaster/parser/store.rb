@@ -117,7 +117,7 @@ module Dockmaster
 
     def parse_docs
       unless @parent.nil?
-        puts "Processing documentation for #{@rb_string}" if Dockmaster.debug?
+        Dockmaster::CLI.debug "Processing documentation for #{@rb_string}"
 
         @docs = Dockmaster::DocProcessor.process(doc_str, @rb_string)
 

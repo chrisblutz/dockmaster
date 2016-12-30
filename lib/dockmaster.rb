@@ -82,6 +82,14 @@ module Dockmaster
     @inc_priv ||= false
   end
 
+  def no_output
+    @no_output = true
+  end
+
+  def no_output?
+    @no_output ||= false
+  end
+
   def load_externals
     Dockmaster::External.load_theme
     Dockmaster::External.load_plugins

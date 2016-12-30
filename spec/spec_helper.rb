@@ -22,6 +22,7 @@ RSpec.configure do |config|
   config.before(:suite) do
     Dockmaster::CONFIG[:plugins] = []
     Dockmaster::CONFIG[:output] = 'rspec/tests/files'
+    Dockmaster.no_output
 
     Dockmaster.load_externals
 

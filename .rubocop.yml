@@ -1,8 +1,12 @@
+AllCops:
+  Exclude:
+    - 'Rakefile'
 Metrics/AbcSize:
   Enabled: False
   Max: 25
 Metrics/BlockLength:
   Exclude:
+    - 'spec/dockmaster/cli/cli_spec.rb'
     - 'spec/dockmaster/docs/processor_defaults_spec.rb'
     - 'spec/dockmaster/output/output_spec.rb'
     - 'spec/dockmaster/output/erb/base_helper_spec.rb'

@@ -10,8 +10,6 @@ RSpec.describe Dockmaster::Output do
         Dockmaster::Output.start_processing(store)
 
         entries = Dir["#{Dockmaster::CONFIG[:output]}/*.html"]
-        entries.delete('.')
-        entries.delete('..')
 
         expect(entries).to include("#{Dockmaster::CONFIG[:output]}/index.html")
       end
@@ -33,8 +31,6 @@ end
         Dockmaster::Output.start_processing(store)
 
         entries = Dir["#{Dockmaster::CONFIG[:output]}/**/*.html"]
-        entries.delete('.')
-        entries.delete('..')
 
         output = Dockmaster::CONFIG[:output]
 
