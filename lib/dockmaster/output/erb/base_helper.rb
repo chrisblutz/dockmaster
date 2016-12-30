@@ -26,7 +26,7 @@ module Dockmaster
     end
 
     def list_all_stores
-      stores = {} # < TODO:  TURN THIS INTO A HASH
+      stores = {}
 
       @master_store.children.each do |child|
         stores.merge!(create_store_list(child))
