@@ -14,3 +14,7 @@ begin
 rescue LoadError
   # Non-testing environment
 end
+
+require 'dockmaster/rake_task'
+
+Dockmaster::RakeTask.new
