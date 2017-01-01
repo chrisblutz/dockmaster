@@ -9,10 +9,13 @@ module Dockmaster
   # interface and helps parse options
   # for commands
   class CLI
+    attr_reader :command_args
     attr_reader :arguments
     attr_reader :options
 
-    def initialize
+    def initialize(command_args)
+      @command_args = command_args
+
       parse_options
 
       return if @arguments.empty? || @arguments[0].start_with?('--') || @arguments[0].start_with?('-')
@@ -77,7 +80,7 @@ module Dockmaster
       @short_options = {}
       @short_current = false
       @current_arg = nil
-      ARGV.each do |arg|
+      @command_args.each do |arg|
         if arg.start_with?('--')
           parse_option_indiv(arg[2..-1], false)
         elsif arg.start_with?('-')

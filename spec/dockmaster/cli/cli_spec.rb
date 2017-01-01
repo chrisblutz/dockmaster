@@ -1,9 +1,8 @@
 RSpec.describe Dockmaster::CLI do
   context 'with --debug option' do
     it 'puts Dockmaster into debug mode' do
-      ARGV.clear
-      ARGV << '--debug'
-      Dockmaster::CLI.new
+      args = ['--debug']
+      Dockmaster::CLI.new(args)
 
       expect(Dockmaster.debug?).to eq(true)
     end
@@ -11,9 +10,8 @@ RSpec.describe Dockmaster::CLI do
 
   context 'with -d short option' do
     it 'puts Dockmaster into debug mode' do
-      ARGV.clear
-      ARGV << '-d'
-      Dockmaster::CLI.new
+      args = ['-d']
+      Dockmaster::CLI.new(args)
 
       expect(Dockmaster.debug?).to eq(true)
     end
@@ -25,7 +23,7 @@ RSpec.describe Dockmaster::CLI do
         old_output = Dockmaster::CONFIG[:output]
         Dockmaster::CONFIG[:output] = "../../../#{old_output}"
         Dir.chdir('spec/files/cli_test') do
-          cli = Dockmaster::CLI.new
+          cli = Dockmaster::CLI.new([])
           cli.execute
 
           Dockmaster::CONFIG[:output] = old_output

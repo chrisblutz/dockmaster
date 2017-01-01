@@ -6,7 +6,7 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '/../lib'))
 require 'dockmaster'
 require 'benchmark'
 
-cli = Dockmaster::CLI.new
+cli = Dockmaster::CLI.new(ARGV)
 result = 0
 
 time = Benchmark.realtime do
