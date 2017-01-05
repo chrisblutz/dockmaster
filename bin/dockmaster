@@ -12,6 +12,7 @@ result = 0
 time = Benchmark.realtime do
   Dockmaster.load_externals
   result = cli.execute
+  cli.error(result) if result.nonzero?
 end
 
 puts "Finished in #{time.round(2)} seconds!" if cli.options[:debug]

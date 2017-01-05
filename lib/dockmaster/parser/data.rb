@@ -2,6 +2,7 @@ module Dockmaster
   # Represents data for a
   # method or field in a Store
   class Data
+    attr_reader :args
     attr_accessor :docs
     attr_reader :doc_str
     attr_reader :file
@@ -10,7 +11,8 @@ module Dockmaster
     attr_reader :private
     attr_writer :readonly
 
-    def initialize(doc_str, file, ast, line, priv)
+    def initialize(doc_str, file, ast, line, priv, args = [])
+      @args = args
       @doc_str = doc_str
       @file = file
       @ast = ast

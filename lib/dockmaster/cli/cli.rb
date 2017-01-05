@@ -1,4 +1,5 @@
 require 'dockmaster/cli/options'
+require 'dockmaster/cli/commands/check'
 
 require 'rainbow'
 require 'rbconfig'
@@ -12,6 +13,7 @@ module Dockmaster
     attr_reader :command_args
     attr_reader :arguments
     attr_reader :options
+    attr_reader :short_options
 
     def initialize(command_args)
       @command_args = command_args
@@ -43,12 +45,16 @@ module Dockmaster
       return 1
     end
 
+    def error(result)
+      puts "Dockmaster encountered an error #{Rainbow("(exit code #{result})").yellow}"
+    end
+
     def build_docs
       store = Dockmaster::DocParser.begin
       Dockmaster::Output.start_processing(store)
       CLI.end_bar
       files_str = Rainbow("#{Dockmaster::Output.generated} files").yellow
-      CLI.output "Documentation built, #{files_str} files generated"
+      CLI.output "Documentation built, #{files_str} generated"
       CLI.output "Generated site can be found in: #{Dockmaster::Output.docs_dir}"
     end
 
@@ -110,7 +116,7 @@ module Dockmaster
 
     class << self
       def increment_progress
-        print Rainbow('.').green unless Dockmaster.debug? || Dockmaster.no_output?
+        increment(Rainbow('.').green) unless Dockmaster.debug? || Dockmaster.no_output?
       end
 
       def end_bar
@@ -119,6 +125,10 @@ module Dockmaster
 
       def output(message)
         puts message unless Dockmaster.no_output?
+      end
+
+      def increment(message)
+        print message unless Dockmaster.no_output?
       end
 
       def debug(message)

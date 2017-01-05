@@ -34,7 +34,7 @@ module Dockmaster
                      else
                        store.data_type(:instance_method)
                      end
-        data_store.store(name, Dockmaster::Data.new(doc_str, DocParser.file, ast, line, priv))
+        data_store.store(name, Dockmaster::Data.new(doc_str, DocParser.file, ast, line, priv, args))
 
         store
       end

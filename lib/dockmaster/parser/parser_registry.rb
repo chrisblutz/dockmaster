@@ -22,7 +22,7 @@ module Dockmaster
       end
 
       def separators
-        @separators = {}
+        @separators ||= {}
       end
 
       def register_separator(type, separator)

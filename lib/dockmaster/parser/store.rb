@@ -107,7 +107,8 @@ module Dockmaster
       data.each do |type, hash|
         hash.each do |name, _|
           link = "#{out}##{type}_#{name}"
-          separator = ParserRegistry.separators[type] || '.'
+          separator = ParserRegistry.separators[type]
+          separator ||= '.'
           Dockmaster::DocProcessor.see_links["#{@rb_string}#{separator}#{name}"] = link
         end
       end
@@ -123,7 +124,8 @@ module Dockmaster
 
         data.each do |type, hash|
           hash.each do |name, data|
-            separator = ParserRegistry.separators[type] || '.'
+            separator = ParserRegistry.separators[type]
+            separator ||= '.'
             data.docs = Dockmaster::DocProcessor.process(data.doc_str, "#{rb_string}#{separator}#{name}")
           end
         end

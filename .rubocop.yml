@@ -7,13 +7,7 @@ Metrics/AbcSize:
   Max: 25
 Metrics/BlockLength:
   Exclude:
-    - 'spec/dockmaster/cli/cli_spec.rb'
-    - 'spec/dockmaster/docs/processor_defaults_spec.rb'
-    - 'spec/dockmaster/output/output_spec.rb'
-    - 'spec/dockmaster/output/erb/base_helper_spec.rb'
-    - 'spec/dockmaster/parser/doc_parser_spec.rb'
-    - 'spec/dockmaster/parser/store_spec.rb'
-    - 'spec/dockmaster/plugin_spec.rb'
+    - 'spec/**/*_spec.rb'
 Metrics/ClassLength:
   Max: 200
 Metrics/CyclomaticComplexity:
