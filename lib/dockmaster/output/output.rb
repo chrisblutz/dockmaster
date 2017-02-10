@@ -1,6 +1,7 @@
 require 'erb'
 require 'fileutils'
 
+require 'dockmaster/cli/cli'
 require 'dockmaster/output/erb/base_helper'
 require 'dockmaster/output/erb/erb_binding'
 
@@ -26,7 +27,10 @@ module Dockmaster
     end
 
     def render(file_path, master_store, store = nil, use_base = true)
-      return if @erb.nil?
+      if @erb.nil?
+        CLI.warn 'ERB renderer not set.  Try calling Output#load_erb().'
+        return
+      end
       store = master_store if store.nil?
       if store.type == :none
         Dockmaster::CLI.debug "Rendering special page... (#{file_path})"
@@ -56,11 +60,25 @@ module Dockmaster
     end
 
     def copy_file(src, dest)
-      return if src.nil? || dest.nil?
+      if src.nil?
+        CLI.warn 'Source file cannot be nil.'
+        return
+      elsif dest.nil?
+        CLI.warn 'Destination file cannot be nil.'
+        return
+      end
       src_file = File.join(Dir.pwd, src)
       dest_dir = File.join(directory, dest)
-      return unless File.exist?(src_file)
+
+      unless File.exist?(src_file)
+        CLI.warn "Source file at '#{src_file}' does not exist."
+        return
+      end
       FileUtils.cp(src_file, dest_dir)
+    end
+
+    def relative_path(filename)
+      File.join(directory, filename)
     end
 
     private

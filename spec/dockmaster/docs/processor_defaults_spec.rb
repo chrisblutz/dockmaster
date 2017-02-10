@@ -160,4 +160,13 @@ RSpec.describe Dockmaster::ProcessorDefaults do
       expect(result[:api]).to eq(:private)
     end
   end
+
+  context 'with @deprecated annotation' do
+    it 'saves the correct deprecation message' do
+      src = '# @deprecated Test message'
+      result = Dockmaster::DocProcessor.process(src, '<none>')
+
+      expect(result[:deprecated]).to eq('Test message')
+    end
+  end
 end

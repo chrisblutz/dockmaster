@@ -90,6 +90,9 @@ module Dockmaster
         # author annotation
         DocProcessor.register_direct_annotation(:author)
 
+        # deprecated annotation
+        DocProcessor.register_direct_annotation(:deprecated)
+
         # api annotation
         DocProcessor.register_annotation_handler(:api) do |text|
           sym = text.to_sym

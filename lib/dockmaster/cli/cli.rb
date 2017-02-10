@@ -127,6 +127,10 @@ module Dockmaster
         puts message unless Dockmaster.no_output?
       end
 
+      def warn(message)
+        puts "WARN: #{message}" unless Dockmaster.no_output?
+      end
+
       def increment(message)
         print message unless Dockmaster.no_output?
       end

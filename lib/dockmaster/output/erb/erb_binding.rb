@@ -1,5 +1,7 @@
 require 'unparser'
 
+require 'dockmaster/cli/cli'
+
 module Dockmaster
   # Represents an ERB binding
   # for the templates
@@ -23,7 +25,7 @@ module Dockmaster
     end
 
     def render
-      return '' if @renderer.nil?
+      return if @renderer.nil?
       @renderer.result(erb_binding)
     end
 
